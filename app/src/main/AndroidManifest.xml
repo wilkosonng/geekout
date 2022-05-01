@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.geekout">
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -18,6 +18,50 @@
             android:theme="@style/Theme.GeekOut">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GeekOut">
+            <intent-filter>
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".InstructionsActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GeekOut">
+            <intent-filter>
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".CreateActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GeekOut">
+            <intent-filter>
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".GameActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GeekOut">
+            <intent-filter>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
