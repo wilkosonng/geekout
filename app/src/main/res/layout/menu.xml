@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/joinButton"
+        android:layout_width="272dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:backgroundTint="#1B6513"
+        android:text="Join A Lobby"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/createButton"
+        android:layout_width="272dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/joinButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:backgroundTint="#1B6513"
+        android:text="Create a Lobby"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/instructionsButton"
+        android:layout_width="272dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/createButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:backgroundTint="#1B6513"
+        android:text="Game Instructions"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="272dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/instructionsButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:backgroundTint="#1B6513"
+        android:text="Settings"
+        android:textColor="#FFFFFF" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="194dp"
+        android:layout_height="163dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:src="@drawable/logo" />
+</RelativeLayout>
