@@ -2,6 +2,10 @@ buildscript {
     ext {
         compose_version = '1.0.1'
     }
+
+    repositories {
+        google()
+    }
     dependencies {
         classpath 'com.google.gms:google-services:4.3.10'
     }

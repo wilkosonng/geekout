@@ -1,43 +1,51 @@
 package com.example.geekout
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.widget.Button
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.geekout.ui.theme.GeekOutTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : Activity() {
+    companion object {
+        const val TAG = "MAIN"
+    }
+
+    private lateinit var joinButton: Button
+    private lateinit var createButton: Button
+    private lateinit var instructionsButton: Button
+    private lateinit var settingsButton: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            GeekOutTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
-            }
+
+        // Sets the Content View to the default view: Menu
+        setContentView(R.layout.menu)
+
+        // Initializes Views
+
+        joinButton = findViewById(R.id.joinButton)
+        createButton = findViewById(R.id.createButton)
+        instructionsButton = findViewById(R.id.instructionsButton)
+        settingsButton = findViewById(R.id.settingsButton)
+
+        // Sets onClickListeners to the buttons
+
+        joinButton.setOnClickListener {
+
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+        createButton.setOnClickListener {
+            startActivity(Intent(this, CreateActivity::class.java))
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    GeekOutTheme {
-        Greeting("Android")
+        instructionsButton.setOnClickListener {
+            startActivity(Intent(this, InstructionsActivity::class.java))
+        }
+
+        settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
     }
 }
