@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.google.firebase.database.*
 
 class CreateActivity: Activity() {
+    // Todo: Implement Lobby Creation Logic
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

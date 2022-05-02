@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.google.firebase.database.*
 
 class GameActivity: Activity() {
+    // Todo: Implement Game
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
