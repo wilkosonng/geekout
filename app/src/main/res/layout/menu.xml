@@ -12,7 +12,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
         android:backgroundTint="#1B6513"
-        android:text="Join A Lobby"
+        android:text="@string/join"
         android:textColor="#FFFFFF" />
 
     <Button
@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
         android:backgroundTint="#1B6513"
-        android:text="Create a Lobby"
+        android:text="@string/create"
         android:textColor="#FFFFFF" />
 
     <Button
@@ -34,7 +34,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
         android:backgroundTint="#1B6513"
-        android:text="Game Instructions"
+        android:text="@string/instructions"
         android:textColor="#FFFFFF" />
 
     <Button
@@ -45,8 +45,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="2dp"
         android:backgroundTint="#1B6513"
-        android:text="Settings"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:text="@string/settings"
+        />
 
     <ImageView
         android:id="@+id/logo"

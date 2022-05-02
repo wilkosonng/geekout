@@ -26,7 +26,7 @@ class CodePromptDialogFragment: DialogFragment() {
                 (activity as MainActivity).joinLobby(input.text.toString())
             }
             .setNegativeButton("Cancel") {_, _ ->
-                dialog.cancel()
+                dialog?.cancel()
             }
             .setView(input)
 
