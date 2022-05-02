@@ -68,7 +68,7 @@ class MainActivity : FragmentActivity() {
         if(PATTERN.matches(code)) {
             // If it does, checks the database for an active lobby matching the code.
 
-            mDatabase.child("lobbies").child(code).get().addOnSuccessListener {
+            mDatabase.child(code).get().addOnSuccessListener {
                 // If a match is found, joins the lobby
                 // Todo: Add Lobby joining code
 
