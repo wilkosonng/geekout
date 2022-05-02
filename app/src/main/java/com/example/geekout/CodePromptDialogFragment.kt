@@ -14,8 +14,6 @@ class CodePromptDialogFragment: DialogFragment() {
         }
     }
 
-    private lateinit var code: String
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         var builder = AlertDialog.Builder(activity)
         var input = EditText(context)
@@ -25,7 +23,7 @@ class CodePromptDialogFragment: DialogFragment() {
             .setMessage("Enter Lobby Code")
             .setCancelable(true)
             .setPositiveButton("Join") {_, _ ->
-                code = input.text.toString()
+                (activity as MainActivity).joinLobby(input.text.toString())
             }
             .setNegativeButton("Cancel") {_, _ ->
                 dialog.cancel()
@@ -33,9 +31,5 @@ class CodePromptDialogFragment: DialogFragment() {
             .setView(input)
 
         return builder.create()
-    }
-
-    fun getCode(): String {
-        return code
     }
 }
