@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 
 class InstructionsActivity: Activity() {
+    // Todo: Create Instructions Screen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
