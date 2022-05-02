@@ -24,7 +24,7 @@ class CreateActivity: Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Sets the Content View to the default view: Menu
+        // Sets the Content View to the Create Lobby View
 
         setContentView(R.layout.create)
 

@@ -69,16 +69,21 @@ class MainActivity : FragmentActivity() {
             // If it does, checks the database for an active lobby matching the code.
 
             mDatabase.child(code).get().addOnSuccessListener {
-                // If a match is found, joins the lobby
-                // Todo: Add Lobby joining code
-
-                Log.i(TAG, "Joined Lobby $code")
-                Toast.makeText(this, "Joined Lobby $code", Toast.LENGTH_LONG).show()
+                if (it.value != null) {
+                    // If a match is found, joins the lobby
+                    // Todo: Add Lobby joining code
+                    Log.i(TAG, "Joined Lobby $code")
+                    Toast.makeText(this, "Joined Lobby $code", Toast.LENGTH_LONG).show()
+                } else {
+                    // If no lobby is found, notifies the user.
+                    Log.i(TAG, "Lobby not found")
+                    Toast.makeText(this, "Lobby not found", Toast.LENGTH_LONG).show()
+                }
             }.addOnFailureListener {
-                // If no match is found, notifies the user.
+                // If query fails, notifies the user.
 
-                Log.i(TAG, "Lobby not found")
-                Toast.makeText(this, "Lobby Not Found", Toast.LENGTH_LONG).show()
+                Log.i(TAG, "Lobby search failed")
+                Toast.makeText(this, "Lobby Search Failed", Toast.LENGTH_LONG).show()
             }
         } else {
             // Notifies the user if there is an invalid lobby code.
