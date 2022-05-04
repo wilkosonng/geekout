@@ -6,4 +6,6 @@
     <string name="settings">Settings</string>
     <string name="createGame">Create Lobby</string>
     <string name="defaultCode">Lobby Code: </string>
+
+    <string name="avatars">🐍🐒🐕🐖🐇🐪🐘🦒🐀🦨🦜🐢🦖🐬🦈🐅🐎🦥🦘🐋</string>
 </resources>
