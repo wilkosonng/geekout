@@ -1,12 +1,9 @@
 package com.example.geekout
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.provider.Settings
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -14,9 +11,9 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.google.firebase.database.*
 
-class MainActivity : FragmentActivity() {
+class MenuActivity : FragmentActivity() {
     companion object {
-        private const val TAG = "MAIN"
+        private const val TAG = "MENU"
         private const val HOST_KEY = "host"
         private const val CODE_KEY = "code"
         private const val UN_KEY = "username"
@@ -108,6 +105,7 @@ class MainActivity : FragmentActivity() {
                         .putExtra(ID_KEY, playerID)
                         .putExtra(UN_KEY, playerName)
                         .putExtra(CODE_KEY, code)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 
                     // Starts game activity
 

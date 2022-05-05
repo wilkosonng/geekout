@@ -29,7 +29,7 @@ class CodePromptDialogFragment: DialogFragment() {
             .setMessage("Enter Lobby Code")
             .setCancelable(true)
             .setPositiveButton("Join") {_, _ ->
-                (activity as MainActivity).joinLobby(input.text.toString())
+                (activity as MenuActivity).joinLobby(input.text.toString())
             }
             .setNegativeButton("Cancel") {_, _ ->
                 dialog?.cancel()

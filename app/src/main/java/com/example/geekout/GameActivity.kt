@@ -3,8 +3,10 @@ package com.example.geekout
 import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
+import android.widget.TextView
+
 import com.google.firebase.database.*
 
 class GameActivity(): Activity() {
@@ -25,12 +27,18 @@ class GameActivity(): Activity() {
     private var isHost: Boolean = false
     private var mCode: String = ""
 
+    private lateinit var mLobbyTextView: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // Sets the Content View to the default view: Game
 
         setContentView(R.layout.game)
+
+        // Initializes Views
+
+        mLobbyTextView = findViewById(R.id.lobbyText)
 
         // Initializes SharedPreferences and inputs Username, ID associated with client
 
@@ -43,7 +51,10 @@ class GameActivity(): Activity() {
 
         var playerID: String = intent.getStringExtra(ID_KEY).toString()
         var playerName: String = intent.getStringExtra(UN_KEY).toString()
-        mPlayer = Player(playerID, playerName)
+
+        // Sets TextView to display LobbyCode while in Lobby State
+
+        "Lobby Code: $mCode".also { mLobbyTextView.text = it }
 
         // Initializes Database Reference
 
@@ -55,7 +66,13 @@ class GameActivity(): Activity() {
             override fun doTransaction(data: MutableData): Transaction.Result {
                 val p = data.getValue(Game::class.java)?: return Transaction.success(data)
 
+                val avatars = p.getAvatars()
+                val avatar = avatars.shuffled()[0]
+
+                mPlayer = Player(playerID, playerName, avatar)
+
                 p.addPlayer(mPlayer)
+                p.removeAvatar(avatar)
 
                 data.value = p
                 return Transaction.success(data)
@@ -72,6 +89,31 @@ class GameActivity(): Activity() {
             }
         })
 
+        // If the player isn't the host, adds listeners for data to sync game state.
+        // If the player is the host, then their game will be the one others sync to.
+
+        if (!isHost) {
+            // Todo: Implement Listeners
+            val playersListener = object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            }
+
+            val stateListener = object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -83,14 +125,16 @@ class GameActivity(): Activity() {
 
             mDatabase.removeValue()
         } else {
-            // Removes player from database if player leaves
+            // Removes player from database if player leaves after a short timeout.
 
             mDatabase.runTransaction(object: Transaction.Handler {
                 override fun doTransaction(data: MutableData): Transaction.Result {
                     val p = data.getValue(Game::class.java)?: return Transaction.success(data)
 
+                    // Adds player avatar back into list of available avatars.
+
                     p.removePlayer(mPlayer)
-                    Log.i(TAG, p.getPlayers().toString())
+                    p.addAvatar(mPlayer.getAvatar())
 
                     data.value = p
                     return Transaction.success(data)
