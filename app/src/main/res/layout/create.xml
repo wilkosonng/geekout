@@ -8,23 +8,22 @@
         android:id="@+id/createGameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/codeText"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="320dp"
         android:backgroundTint="#1B6513"
         android:text="@string/createGame"
-        android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="128dp"
-        tools:layout_editor_absoluteY="523dp"/>
+        android:textColor="#FFFFFF" />
 
     <TextView
         android:id="@+id/codeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="50dp"
         android:text="@string/defaultCode"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
 
 </RelativeLayout>

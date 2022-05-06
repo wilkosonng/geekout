@@ -1,20 +1,24 @@
 package com.example.geekout
 
-// Todo: Implement Player Class
-
-class Player(id: String, name: String) {
+class Player(id: String, name: String, avatar: String): Comparable<Player> {
 
     // Satisfies serializable requirement for Firebase
 
-    constructor() : this("0000000000000000", "Invalid") {
+    constructor() : this("0000000000000000", "Null", "") {
 
     }
 
-    // Initializes variables
+    /* Initializes variables
+     * id: Unique ID to identify the player.
+     * name: Username displayed to other players.
+     * avatar: emoji avatar dispalyed to other players.
+     * points: the number of points the user has.
+     */
 
-    private var id = id
-    private var name = name
-    private var points = 0
+    private var id: String = id
+    private var name: String = name
+    private var avatar: String = avatar
+    private var points: Int = 0
 
     // Getter for ID
 
@@ -62,7 +66,13 @@ class Player(id: String, name: String) {
         return points
     }
 
-    // ToString for testing
+    // Getter for avatar
+
+    fun getAvatar(): String {
+        return avatar
+    }
+
+    // toString for testing
 
     override fun toString(): String {
         return "$id, $name"
@@ -72,5 +82,11 @@ class Player(id: String, name: String) {
 
     override fun equals(other: Any?): Boolean {
         return (other is Player) && id == other.id
+    }
+
+    // CompareTo override for sorting
+
+    override fun compareTo(other: Player): Int {
+        return other.points - points
     }
 }
