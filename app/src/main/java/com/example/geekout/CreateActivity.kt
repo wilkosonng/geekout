@@ -57,7 +57,7 @@ class CreateActivity: Activity() {
 
         mCreateLobby.setOnClickListener {
             if (mCode != "") {
-                mCode = "TEST"
+//                mCode = "TEST"
 
                 val playerID = mPrefs.getString(ID_KEY, "") as String
                 val playerName = mPrefs.getString(UN_KEY, "") as String
