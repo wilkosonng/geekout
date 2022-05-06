@@ -1,16 +1,16 @@
 package com.example.geekout
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import com.google.firebase.database.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class CreateActivity: Activity() {
     companion object {
@@ -29,9 +29,8 @@ class CreateActivity: Activity() {
     private lateinit var mCreateLobby: Button
     private lateinit var mCodeTextView: TextView
     private lateinit var mPrefs: SharedPreferences
-    private lateinit var mCode: String
+    private var mCode: String = ""
 
-    // Todo: Implement Lobby Creation Logic
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,19 +56,24 @@ class CreateActivity: Activity() {
         rollCode()
 
         mCreateLobby.setOnClickListener {
-            if (mCode != null) {
+            if (mCode != "") {
+//                mCode = "TEST"
 
                 val playerID = mPrefs.getString(ID_KEY, "") as String
                 val playerName = mPrefs.getString(UN_KEY, "") as String
 
-                mDatabase.child("totest").setValue(Game())
+                mDatabase.child(mCode).setValue(Game())
 
                 val gameIntent = Intent(this, GameActivity::class.java)
 
                 gameIntent.putExtra(HOST_KEY, true)
                     .putExtra(ID_KEY, playerID)
                     .putExtra(UN_KEY, playerName)
-                    .putExtra(CODE_KEY, "totest")
+                    .putExtra(CODE_KEY, mCode)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+
+                Log.i(TAG, "Lobby created with code $mCode")
+                Toast.makeText(this, "Lobby created with code $mCode", Toast.LENGTH_LONG).show()
 
                 startActivity(gameIntent)
             } else {
@@ -84,7 +88,7 @@ class CreateActivity: Activity() {
 
         // Rolls a random code
 
-        for (i in 1..6) {
+        for (i in 1..4) {
             code += CHARSET.random()
         }
         
