@@ -1,8 +1,6 @@
 package com.example.geekout
 
-// Todo: Implement Player Class
-
-class Player(id: String, name: String, avatar: String) {
+class Player(id: String, name: String, avatar: String): Comparable<Player> {
 
     // Satisfies serializable requirement for Firebase
 
@@ -84,5 +82,11 @@ class Player(id: String, name: String, avatar: String) {
 
     override fun equals(other: Any?): Boolean {
         return (other is Player) && id == other.id
+    }
+
+    // CompareTo override for sorting
+
+    override fun compareTo(other: Player): Int {
+        return other.points - points
     }
 }

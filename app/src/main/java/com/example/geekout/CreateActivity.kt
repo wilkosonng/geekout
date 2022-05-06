@@ -31,7 +31,6 @@ class CreateActivity: Activity() {
     private lateinit var mPrefs: SharedPreferences
     private var mCode: String = ""
 
-    // Todo: Implement Lobby Creation Logic
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,6 +57,7 @@ class CreateActivity: Activity() {
 
         mCreateLobby.setOnClickListener {
             if (mCode != "") {
+                mCode = "TEST"
 
                 val playerID = mPrefs.getString(ID_KEY, "") as String
                 val playerName = mPrefs.getString(UN_KEY, "") as String
@@ -88,7 +88,7 @@ class CreateActivity: Activity() {
 
         // Rolls a random code
 
-        for (i in 1..6) {
+        for (i in 1..4) {
             code += CHARSET.random()
         }
         

@@ -19,7 +19,7 @@ class MenuActivity : FragmentActivity() {
         private const val UN_KEY = "username"
         private const val ID_KEY = "id"
         private val CHARSET = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        private val PATTERN = Regex("[a-zA-Z]{6}")
+        private val PATTERN = Regex("[a-zA-Z]{4}")
     }
 
     private lateinit var mJoinButton: Button

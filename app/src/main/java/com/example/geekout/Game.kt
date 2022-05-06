@@ -3,13 +3,19 @@ package com.example.geekout
 import android.util.Log
 
 class Game() {
-    // Todo: Define Game Class for Database and sync use.
-
     // Specifies which state the game is in.
 
     enum class State {
-        LOBBY, DRAW, ROLL, BID, TASK, REVIEW, FINISH
+        LOBBY, DRAW, ROLL, BID, TASK, REVIEW, FINISH, HOST_DC
     }
+
+    // Specifies player actions
+
+    enum class Action {
+        BID, BID_PASS, BID_TIMEOUT, REVIEW_VETO, REVIEW_ACCEPT, REVIEW_TIMEOUT
+    }
+
+    // Specifies challenge roll colors
 
     enum class Roll {
         RED, BLUE, YELLOW, GREEN, BLACK
@@ -26,11 +32,14 @@ class Game() {
     */
 
     private var players: ArrayList<Player> = ArrayList()
+    private var answers: ArrayList<String> = ArrayList()
+    private var actions: HashMap<Player, Action> = HashMap()
+    private var currentBid: HashMap<Player, Int> = HashMap()
     private var gameState: State = State.LOBBY
     private var currentTurn: Player? = null
     private var activePlayer: Player? = null
     private var currentCard: Card? = null
-    private var currentBid: Int = -1
+    private var currentColor: Roll? = null
     private var avatars: ArrayList<String> = arrayListOf(
         "🐍", "🐒", "🐕", "🐖", "🐇", "🐪", "🐘", "🦒", "🐀", "🦜",
         "🐢", "🦖", "🐬", "🦈", "🐅", "🐎", "🦥", "🦘", "🐋")
@@ -53,6 +62,12 @@ class Game() {
         return players
     }
 
+    // Setter for Players
+
+    fun setPlayers(playersList: ArrayList<Player>) {
+        players = playersList
+    }
+
     // Getter for State
 
     fun getState(): Game.State {
@@ -67,13 +82,13 @@ class Game() {
 
     // Getter for currentbid
 
-    fun getBid(): Int {
+    fun getBid(): HashMap<Player, Int> {
         return currentBid
     }
 
     // Setter for currentBid
 
-    fun setBid(bid: Int) {
+    fun setBid(bid: HashMap<Player, Int>) {
         currentBid = bid
     }
 
@@ -112,6 +127,80 @@ class Game() {
     fun setAvatars(avatarList: ArrayList<String>) {
         avatars = avatarList
     }
+
+    // Getter for Active
+
+    fun getActive(): Player? {
+        return activePlayer
+    }
+
+    // Setter for Active
+
+    fun setActive(active: Player) {
+        activePlayer = active
+    }
+
+    // Getter for Card
+
+    fun getCard(): Card? {
+        return currentCard
+    }
+
+    // Setter for Card
+
+    fun setCard(card: Card) {
+        currentCard = card
+    }
+
+    // Getter for Answers
+
+    fun getAnswers(): ArrayList<String> {
+        return answers
+    }
+
+    // Setter for answers
+
+    fun setAnswers(answerList: ArrayList<String>) {
+        answers = answerList
+    }
+
+    // Getter for Actions
+
+    fun getActions(): HashMap<Player, Action> {
+        return actions
+    }
+
+    // Setter for Specific Player Action
+
+    fun submitAction(player: Player, action: Action) {
+        actions[player] = action
+    }
+
+    // Clears actions
+
+    fun clearActions() {
+        actions.clear()
+    }
+
+    // Setter for Actions
+
+    fun setActions(actionsMap: HashMap<Player, Action>) {
+        actions = actionsMap
+    }
+
+    // Getter for Color
+
+    fun getColor(): Roll? {
+        return currentColor
+    }
+
+    // Setter for color
+
+    fun setColor(color: Roll) {
+        currentColor = color
+    }
+
+    // Rolls a color to be used.
 
     fun rollColor(): Game.Roll {
         return Roll.values().toList().shuffled().first()
