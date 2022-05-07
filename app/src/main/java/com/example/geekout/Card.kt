@@ -17,4 +17,5 @@ class Card(private var bid : Int, private val text : String) {
     public fun getFullText() : String {
         return "$bid $text"
     }
+
 }
