@@ -1,6 +1,20 @@
 package com.example.geekout
 
-class Card {
-    // Todo: Create Card that can be drawn
+class Card(private var bid : Int, private val text : String) {
 
+    public fun getBid() : Int {
+        return bid
+    }
+
+    public fun updateBid(newBid : Int) {
+        bid = newBid
+    }
+
+    public fun getText() : String {
+        return text
+    }
+
+    public fun getFullText() : String {
+        return "$bid $text"
+    }
 }
