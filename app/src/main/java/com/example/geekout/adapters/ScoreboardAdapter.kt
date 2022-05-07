@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.adapters
 
 import android.content.Context
 import android.os.Handler
@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.geekout.R
+import com.example.geekout.classes.Player
 
 class ScoreboardAdapter(private val context: Context):
     RecyclerView.Adapter<ScoreboardAdapter.ViewHolder>() {

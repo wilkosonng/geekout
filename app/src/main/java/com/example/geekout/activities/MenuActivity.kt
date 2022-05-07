@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,6 +9,9 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import com.example.geekout.R
+import com.example.geekout.classes.Game
+import com.example.geekout.fragments.CodePromptDialogFragment
 import com.google.firebase.database.*
 
 class MenuActivity : FragmentActivity() {
