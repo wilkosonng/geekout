@@ -1,6 +1,8 @@
 package com.example.geekout
 
-class Card(private var bid : Int = -1, private val text : String = "Card Error") {
+import com.example.geekout.classes.Game
+
+class Card(private var bid : Int = -1, private val text : String = "Card Error", private val color : Game.Roll) {
 
     public fun getBid() : Int {
         return bid
@@ -17,5 +19,11 @@ class Card(private var bid : Int = -1, private val text : String = "Card Error")
     public fun getFullText() : String {
         return "$bid $text"
     }
+
+    public fun getCategory() : Game.Roll {
+        return color
+    }
+
+
 
 }
