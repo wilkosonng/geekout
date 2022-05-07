@@ -2,11 +2,12 @@ package com.example.geekout
 
 import android.content.res.Resources
 import java.io.File
+import java.io.InputStream
 import com.example.geekout.classes.Game
 
-class CardGenerator {
+class CardGenerator (var gameCards : Array<String>){
     // TODO Add libraries and actual card generation
-    private var gameCards = File("src/main/res/raw/gamecards.txt").readLines().shuffled()
+    // private var gameCards = File("app/src/main/res/raw/gamecards.txt").readLines().shuffled()
 
     public fun generateCard(color : Game.Roll) : Card {
 

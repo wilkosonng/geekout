@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.geekout.Card
 import com.example.geekout.CardGenerator
 import com.example.geekout.R
 import com.example.geekout.adapters.ScoreboardAdapter
@@ -85,8 +86,10 @@ class GameActivity(): Activity() {
         // Sets default View states for Lobby
 
         "Lobby Code: $mCode".also { mLobbyTextView.text = it }
-
+        
         // Initializes Database Reference
+        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.gamecards))
+//        var tst : Card = mCardGenerator.generateCard(Game.Roll.RED)
 
         mDatabase = FirebaseDatabase.getInstance().getReference("lobbies").child(mCode)
 
@@ -337,5 +340,9 @@ class GameActivity(): Activity() {
 
             }
         }
+    }
+    fun getTextFromRaw(myid : Int) : Array<String> {
+        var rawText = resources.openRawResource(myid).bufferedReader().use { it.readText() }
+        return rawText.split("[\r\n]+".toRegex()).toTypedArray()
     }
 }
