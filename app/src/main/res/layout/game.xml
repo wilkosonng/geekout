@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scoreboardRecycler"
         android:layout_width="295dp"
@@ -19,7 +18,8 @@
         android:background="#92B8BAB7"
         android:clipToPadding="true"
         android:scrollbars="vertical"
-        tools:listitem="@layout/player_score" />
+        tools:listitem="@layout/player_score"
+        tools:visibility="gone"/>
 
     <TextView
         android:id="@+id/lobbyText"
@@ -27,17 +27,20 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:textSize="25dp" />
+        android:textSize="25sp"
+        tools:visibility="gone"/>
 
     <Button
         android:id="@+id/startGameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="320dp"
+        android:layout_marginBottom="50dp"
         android:backgroundTint="#1B6513"
         android:text="@string/startGame"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:visibility="gone"/>
+
 </RelativeLayout>

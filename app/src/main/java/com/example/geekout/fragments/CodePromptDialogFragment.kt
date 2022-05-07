@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.InputType
 import android.widget.EditText
 import androidx.fragment.app.DialogFragment
+import com.example.geekout.activities.MenuActivity
 
 // Dialog fragment to handle text input for lobby code input
 

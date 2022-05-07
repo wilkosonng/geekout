@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.activities
 
 import android.app.Activity
 import android.content.SharedPreferences
@@ -8,8 +8,13 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.geekout.R
+import com.example.geekout.adapters.ScoreboardAdapter
+import com.example.geekout.classes.Game
+import com.example.geekout.classes.Player
 
 import com.google.firebase.database.*
 
@@ -23,12 +28,12 @@ class GameActivity(): Activity() {
         private const val HOST_KEY = "host"
     }
 
-    private lateinit var mGame: Game
     private lateinit var mPlayer: Player
     private lateinit var mDatabase: DatabaseReference
     private lateinit var mPrefs: SharedPreferences
+    private lateinit var mCode: String
+    private var mGame = Game()
     private var isHost: Boolean = false
-    private var mCode: String = ""
 
     private lateinit var mLobbyTextView: TextView
     private lateinit var mScoreboardRecyclerView: RecyclerView
@@ -67,15 +72,18 @@ class GameActivity(): Activity() {
         var playerID: String = intent.getStringExtra(ID_KEY).toString()
         var playerName: String = intent.getStringExtra(UN_KEY).toString()
 
+        // Displays Default Lobby Views
+
+        mScoreboardRecyclerView.visibility = View.VISIBLE
+        mLobbyTextView.visibility = View.VISIBLE
+
+        if (isHost) {
+            mStartGameButton.visibility = View.VISIBLE
+        }
+
         // Sets default View states for Lobby
 
         "Lobby Code: $mCode".also { mLobbyTextView.text = it }
-
-        // Hides start game button for non-hosts.
-
-        if (!isHost) {
-            mStartGameButton.visibility = View.GONE
-        }
 
         // Initializes Database Reference
 
@@ -117,20 +125,25 @@ class GameActivity(): Activity() {
 
         // Todo: Implement Listeners
 
-        val playersListener = object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val players = snapshot.value as ArrayList<Player>
+        mDatabase.child("players").addValueEventListener(
+            object: ValueEventListener {
 
-                mGame.setPlayers(players)
-                drawGame(mGame)
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    // When the player list is updated (player joins or leaves), update local game.
+
+                    val type = object: GenericTypeIndicator<ArrayList<Player>>() {}
+                    val players = snapshot.getValue(type) as ArrayList<Player>
+
+                    mGame.setPlayers(players)
+                    drawGame(mGame)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.i(TAG, "Could not fetch Players")
             }
-        }
-
-        mDatabase.child("players").addValueEventListener(playersListener)
+        })
 
         if (isHost) {
             val actionsListener = object: ValueEventListener {
@@ -147,7 +160,14 @@ class GameActivity(): Activity() {
         } else {
             val stateListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // When the game state is updated, updates UI
 
+                        val state = snapshot.getValue(Game.State::class.java) as Game.State
+                        mGame.setState(state)
+
+                        drawGame(mGame)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -196,8 +216,15 @@ class GameActivity(): Activity() {
             }
         }
 
+        // Adds an onClick Listener to the StartGame Button
+
         mStartGameButton.setOnClickListener {
-            startGame()
+            if (mGame.getPlayers().size > 1) {
+                startGame()
+            } else {
+                Log.i(TAG, "Not enough players to start.")
+                Toast.makeText(this, "Not enough players", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -277,6 +304,11 @@ class GameActivity(): Activity() {
             }
 
             Game.State.DRAW -> {
+                mLobbyTextView.visibility = View.GONE
+
+                if (isHost) {
+                    mStartGameButton.visibility = View.GONE
+                }
 
             }
 
@@ -297,6 +329,10 @@ class GameActivity(): Activity() {
             }
 
             Game.State.FINISH -> {
+
+            }
+
+            Game.State.HOST_DC -> {
 
             }
         }

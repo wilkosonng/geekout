@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.classes
 
 class Player(id: String, name: String, avatar: String): Comparable<Player> {
 
