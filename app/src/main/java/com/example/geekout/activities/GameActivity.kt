@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.geekout.CardGenerator
 import com.example.geekout.R
 import com.example.geekout.adapters.ScoreboardAdapter
 import com.example.geekout.classes.Game
