@@ -6,7 +6,7 @@ import com.example.geekout.classes.Game
 
 class CardGenerator {
     // TODO Add libraries and actual card generation
-    private var gameCards = File("src/main/res/raw/gameCards.txt").readLines().shuffled()
+    private var gameCards = File("src/main/res/raw/gamecards.txt").readLines().shuffled()
 
     public fun generateCard(color : Game.Roll) : Card {
 
