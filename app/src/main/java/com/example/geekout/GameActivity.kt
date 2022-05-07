@@ -34,6 +34,7 @@ class GameActivity(): Activity() {
     private lateinit var mScoreboardRecyclerView: RecyclerView
     private lateinit var mScoreboardAdapter: ScoreboardAdapter
     private lateinit var mStartGameButton: Button
+    private lateinit var mCardGenerator : CardGenerator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
