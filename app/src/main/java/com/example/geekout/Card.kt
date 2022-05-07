@@ -1,6 +1,6 @@
 package com.example.geekout
 
-class Card(private var bid : Int, private val text : String) {
+class Card(private var bid : Int = -1, private val text : String = "Card Error") {
 
     public fun getBid() : Int {
         return bid
