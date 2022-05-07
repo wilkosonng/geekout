@@ -13,7 +13,7 @@
         android:theme="@style/Theme.GeekOut"
         >
         <activity
-            android:name=".MenuActivity"
+            android:name=".activities.MenuActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -36,7 +36,7 @@
         </activity>
 
         <activity
-            android:name=".InstructionsActivity"
+            android:name=".activities.InstructionsActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -47,7 +47,7 @@
         </activity>
 
         <activity
-            android:name=".CreateActivity"
+            android:name=".activities.CreateActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-            android:name=".GameActivity"
+            android:name=".activities.GameActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

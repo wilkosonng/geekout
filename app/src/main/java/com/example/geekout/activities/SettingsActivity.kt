@@ -1,7 +1,8 @@
-package com.example.geekout
+package com.example.geekout.activities
 
 import android.os.Bundle
 import android.app.Activity
+import com.example.geekout.R
 
 class SettingsActivity: Activity() {
     // Todo: Create Settings Screen

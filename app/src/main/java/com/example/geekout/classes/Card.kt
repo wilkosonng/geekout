@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.classes
 
 class Card(private var bid : Int, private val text : String) {
 

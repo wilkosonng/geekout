@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.activities
 
 import android.app.Activity
 import android.content.SharedPreferences
@@ -11,6 +11,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.geekout.R
+import com.example.geekout.adapters.ScoreboardAdapter
+import com.example.geekout.classes.Game
+import com.example.geekout.classes.Player
 
 import com.google.firebase.database.*
 
@@ -324,6 +328,10 @@ class GameActivity(): Activity() {
             }
 
             Game.State.FINISH -> {
+
+            }
+
+            Game.State.HOST_DC -> {
 
             }
         }

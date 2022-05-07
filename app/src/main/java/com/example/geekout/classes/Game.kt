@@ -1,6 +1,4 @@
-package com.example.geekout
-
-import android.util.Log
+package com.example.geekout.classes
 
 class Game() {
     // Specifies which state the game is in.
@@ -70,13 +68,13 @@ class Game() {
 
     // Getter for State
 
-    fun getState(): Game.State {
+    fun getState(): State {
         return gameState
     }
 
     // Setter for State
 
-    fun setState(state: Game.State) {
+    fun setState(state: State) {
         gameState = state
     }
 
@@ -202,7 +200,7 @@ class Game() {
 
     // Rolls a color to be used.
 
-    fun rollColor(): Game.Roll {
+    fun rollColor(): Roll {
         return Roll.values().toList().shuffled().first()
     }
 

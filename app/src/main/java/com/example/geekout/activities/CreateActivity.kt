@@ -1,4 +1,4 @@
-package com.example.geekout
+package com.example.geekout.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.example.geekout.R
+import com.example.geekout.classes.Game
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 

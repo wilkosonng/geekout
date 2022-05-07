@@ -12,7 +12,7 @@
         android:layout_marginBottom="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="320dp"
-        android:backgroundTint="#1B6513"
+        android:backgroundTint="@color/green"
         android:text="@string/createGame"
         android:textColor="#FFFFFF" />
 
