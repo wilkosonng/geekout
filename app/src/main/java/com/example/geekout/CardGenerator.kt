@@ -1,5 +1,7 @@
 package com.example.geekout
 
+import com.example.geekout.classes.Game
+
 class CardGenerator {
     // TODO Add libraries and actual card generation
 
@@ -16,27 +18,27 @@ class CardGenerator {
 
     private fun generateYellow() : Card {
         // Sci-Fi
-        return Card(4, "Hello, this is a yellow card")
+        return Card(4, "Hello, this is a yellow card", Game.Roll.YELLOW)
     }
 
     private fun generateRed() : Card {
         // Games
-        return Card(3, "Hello, this is a red card")
+        return Card(3, "Hello, this is a red card", Game.Roll.RED)
     }
 
     private fun generateBlue() : Card {
         // Comics
-        return Card(2, "Hello, this is a blue card")
+        return Card(2, "Hello, this is a blue card", Game.Roll.BLUE)
     }
 
     private fun generateGreen() : Card {
         // Fantasy
-        return Card(5, "Hello, this is a green card")
+        return Card(5, "Hello, this is a green card", Game.Roll.GREEN)
     }
 
     private fun generateBlack() : Card {
         // Misc.
-        return Card(6, "Hello, this is a black card")
+        return Card(6, "Hello, this is a black card", Game.Roll.BLACK)
     }
 
 }
