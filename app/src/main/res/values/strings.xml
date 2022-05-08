@@ -18,7 +18,6 @@
     <string name="yellowCircle">🟡</string>
     <string name="greenCircle">🟢</string>
     <string name="blackCircle">⚫</string>
-
-    <string name="outgeek">Out-geek your opponents by out-bidding and completing challenges in different categories of geekery!
-        Steal and score points by being able to complete bigger lists than your opponents, but don\'t bid too high or you could end up losing points in the end.</string>
+    
+    <string name="outgeek">1. Set your username in the "Settings" tab\n2. Either Join a Lobby if you already have a lobby code or Create a Lobby\n3. Start Game \n4. Flip the card (the category is chosen at random for you) and perform the challenge\n5. If you are successful in completing the task, you earn points. If not, you do not earn any points\n6. First player to reach 5 points wins the game (slide to the right of the screen to see your score) </string>
 </resources>
