@@ -31,10 +31,11 @@
             android:id="@+id/cardInfo"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="10dp"
+            android:layout_centerHorizontal="true"
             android:layout_toRightOf="@id/colorText"
+            android:layout_marginLeft="10dp"
             android:text="Name 3 Video Games with Monkeys"
+            android:layout_centerVertical="true"
             android:textSize="20sp" />
     </RelativeLayout>
 
