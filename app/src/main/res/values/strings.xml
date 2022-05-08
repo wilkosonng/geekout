@@ -7,6 +7,10 @@
     <string name="createGame">Create Lobby</string>
     <string name="defaultCode">Lobby Code: </string>
     <string name="startGame">Start Game</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="submit">Submit</string>
+    <string name="pass">Pass</string>
 
     <!-- Constant Emojis used for Cards-->
     <string name="redCircle">🔴</string>
@@ -14,6 +18,7 @@
     <string name="yellowCircle">🟡</string>
     <string name="greenCircle">🟢</string>
     <string name="blackCircle">⚫</string>
+
     <string name="outgeek">Out-geek your opponents by out-bidding and completing challenges in different categories of geekery!
         Steal and score points by being able to complete bigger lists than your opponents, but don\'t bid too high or you could end up losing points in the end.</string>
 </resources>
