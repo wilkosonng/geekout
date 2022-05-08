@@ -11,7 +11,7 @@ import android.widget.TextView
 import com.example.geekout.R
 import com.example.geekout.classes.Game
 
-class BidFragment(private val game: Game) : Fragment() {
+class ReviewFragment(private val game: Game) : Fragment() {
 
     companion object {
         private const val RED = R.string.redCircle
@@ -32,11 +32,12 @@ class BidFragment(private val game: Game) : Fragment() {
     ): View {
         // Inflate the layout for this fragment
 
-        val mView = inflater.inflate(R.layout.bid_fragment, container, false)
+        val mView = inflater.inflate(R.layout.draw_fragment, container, false)
 
         // Sets view values
 
         cardFrontView = mView.findViewById(R.id.cardFront)
+        cardBackView = mView.findViewById(R.id.cardBack)
         cardText = mView.findViewById(R.id.cardInfo)
         cardColor = mView.findViewById(R.id.colorText)
 

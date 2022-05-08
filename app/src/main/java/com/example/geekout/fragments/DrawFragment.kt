@@ -1,7 +1,10 @@
 package com.example.geekout.fragments
 
+import android.animation.Animator
 import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,10 +15,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.animation.addListener
+import androidx.core.animation.doOnEnd
 import com.example.geekout.R
+import com.example.geekout.activities.GameActivity
 import com.example.geekout.classes.Game
 
-class DrawFragment(private val game: Game) : Fragment() {
+class DrawFragment(private val game: Game,  private val mActivity: GameActivity) : Fragment() {
 
     companion object {
         private const val RED = R.string.redCircle
@@ -61,12 +67,6 @@ class DrawFragment(private val game: Game) : Fragment() {
         mFrontAnimator = AnimatorInflater.loadAnimator(requireContext(), R.animator.card_to_front) as AnimatorSet
         mBackAnimator = AnimatorInflater.loadAnimator(requireContext(), R.animator.card_to_back) as AnimatorSet
 
-        return mView
-    }
-
-    fun playFlip() {
-        // Plays the animation
-
         Handler(Looper.getMainLooper()).post {
             mFrontAnimator.setTarget(cardBackView)
             mBackAnimator.setTarget(cardFrontView)
@@ -74,5 +74,11 @@ class DrawFragment(private val game: Game) : Fragment() {
             mFrontAnimator.start()
             mBackAnimator.start()
         }
+
+        mFrontAnimator.doOnEnd {
+            mActivity.onFlipEnd()
+        }
+
+        return mView
     }
 }

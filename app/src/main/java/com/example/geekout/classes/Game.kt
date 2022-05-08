@@ -10,7 +10,7 @@ class Game() {
     // Specifies player actions
 
     enum class Action {
-        BID, BID_PASS, BID_TIMEOUT, REVIEW_VETO, REVIEW_ACCEPT, REVIEW_TIMEOUT
+        NONE, BID, BID_PASS, BID_TIMEOUT, REVIEW_VETO, REVIEW_ACCEPT, REVIEW_TIMEOUT
     }
 
     // Specifies challenge roll colors
@@ -45,12 +45,14 @@ class Game() {
     // Adds a player
 
     fun addPlayer(player: Player) {
+        actions.add(Action.NONE)
         players.add(player)
     }
 
     // Removes a player
 
     fun removePlayer(player: Player) {
+        actions.removeAt(players.indexOf(player))
         players.remove(player)
     }
 
@@ -172,6 +174,12 @@ class Game() {
 
     fun submitAction(pos: Int, action: Action) {
         actions[pos] = action
+    }
+
+    // Remove a specific player action
+
+    fun removeAction(pos: Int) {
+        actions.removeAt(pos)
     }
 
     // Clears actions
