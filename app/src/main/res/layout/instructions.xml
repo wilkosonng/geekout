@@ -12,6 +12,14 @@
         android:textColor="#008000"
         android:textSize="40dp"
         android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/text_view_id1"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="@string/outgeek"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
 
 </LinearLayout>
 
