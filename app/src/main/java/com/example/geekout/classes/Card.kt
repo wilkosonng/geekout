@@ -1,6 +1,7 @@
 package com.example.geekout.classes
 
 class Card(private var bid : Int, private val text : String, private val color: Game.Roll) {
+    // Default constructor for Firebase serialization
 
     constructor() : this(-1, "Invalid", Game.Roll.RED) {
 

@@ -1,10 +1,6 @@
 package com.example.geekout.fragments
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +11,7 @@ import android.widget.TextView
 import com.example.geekout.R
 import com.example.geekout.classes.Game
 
-class DrawFragment(private val game: Game) : Fragment() {
+class BidFragment(private val game: Game) : Fragment() {
 
     companion object {
         private const val RED = R.string.redCircle
@@ -29,8 +25,6 @@ class DrawFragment(private val game: Game) : Fragment() {
     private lateinit var cardBackView: ImageView
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
-    private lateinit var mBackAnimator: AnimatorSet
-    private lateinit var mFrontAnimator: AnimatorSet
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,21 +52,6 @@ class DrawFragment(private val game: Game) : Fragment() {
             }
         }
 
-        mFrontAnimator = AnimatorInflater.loadAnimator(requireContext(), R.animator.card_to_front) as AnimatorSet
-        mBackAnimator = AnimatorInflater.loadAnimator(requireContext(), R.animator.card_to_back) as AnimatorSet
-
         return mView
-    }
-
-    fun playFlip() {
-        // Plays the animation
-
-        Handler(Looper.getMainLooper()).post {
-            mFrontAnimator.setTarget(cardBackView)
-            mBackAnimator.setTarget(cardFrontView)
-
-            mFrontAnimator.start()
-            mBackAnimator.start()
-        }
     }
 }
