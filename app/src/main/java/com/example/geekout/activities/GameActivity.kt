@@ -87,7 +87,9 @@ class GameActivity(): FragmentActivity() {
 
         // Initializes card generator
 
-        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.gamecards))
+        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.scificards), getTextFromRaw(R.raw.gamecards),
+                                        getTextFromRaw(R.raw.comiccards), getTextFromRaw(R.raw.fantasycards),
+                                        getTextFromRaw(R.raw.misccards))
 
         // Adds the player to the lobby using a transaction to ensure read/write safety.
 

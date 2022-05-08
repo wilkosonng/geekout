@@ -7,12 +7,16 @@ import android.content.res.Resources
 import java.io.File
 import java.io.InputStream
 
-class CardGenerator (var gameCards : Array<String>){
+class CardGenerator (var sciFiCards : Array<String>, var gameCards : Array<String>,
+                     var comicCards : Array<String>,  var fantasyCards : Array<String>,
+                     var miscCards : Array<String>){
     // TODO Add libraries and actual card generation
     // private var gameCards = File("app/src/main/res/raw/gamecards.txt").readLines().shuffled()
 
     public fun generateCard(color : Game.Roll) : Card {
-
+        if(sciFiCards.size + gameCards.size + comicCards.size + fantasyCards.size + miscCards.size == 0) {
+            return Card(-1, "Out of cards :(", Game.Roll.BLACK)
+        }
         return when (color) {
             Game.Roll.YELLOW -> generateYellow()
             Game.Roll.RED -> generateRed()
