@@ -25,6 +25,13 @@
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/scoreboard_fragment.xml" value="0.1703125" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/settings.xml" value="0.360054347826087" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.294" />
+<<<<<<< HEAD
+        <entry key="..\:/Users/danie/Documents/CMSC436/geekout/app/src/main/res/drawable/game_vector.xml" value="0.152" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/instructions.xml" value="0.11145833333333334" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/lobby_fragment.xml" value="0.11145833333333334" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/settings.xml" value="0.1" />
+=======
+>>>>>>> f5a8aa87fc0d47a393c14c642dbb11bb336623b5
       </map>
     </option>
   </component>
