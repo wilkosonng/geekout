@@ -436,6 +436,6 @@ class GameActivity(): FragmentActivity() {
 
     private fun getTextFromRaw(myID : Int) : Array<String> {
         var rawText = resources.openRawResource(myID).bufferedReader().use { it.readText() }
-        return rawText.split("[\r\n]+".toRegex()).toTypedArray()
+        return rawText.split("[\r\n]+".toRegex()).shuffled().toTypedArray()
     }
 }
