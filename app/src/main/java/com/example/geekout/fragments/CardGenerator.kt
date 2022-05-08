@@ -1,4 +1,7 @@
-package com.example.geekout
+package com.example.geekout.fragments
+
+import com.example.geekout.classes.Card
+import com.example.geekout.classes.Game
 
 class CardGenerator {
     // TODO Add libraries and actual card generation

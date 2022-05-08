@@ -5,42 +5,50 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.geekout.R
+import com.example.geekout.activities.GameActivity
+import com.example.geekout.adapters.ScoreboardAdapter
+import com.example.geekout.classes.Game
+import com.example.geekout.classes.Player
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-class LobbyFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+class LobbyFragment(private val game: Game, private val code: String, private val isHost: Boolean) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.lobby_fragment, container, false)
-    }
 
-    companion object {
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LobbyFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        val mView =  inflater.inflate(R.layout.lobby_fragment, container, false)
+
+        // Sets all of the view parameters
+
+        val mScoreboardAdapter = ScoreboardAdapter(requireContext())
+
+        val mScoreboardRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
+        mScoreboardRecyclerView.adapter = mScoreboardAdapter
+        mScoreboardRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        mScoreboardAdapter.set(game.getPlayers())
+
+        val mLobbyCodeTextView = mView.findViewById<TextView>(R.id.lobbyText)
+        mLobbyCodeTextView.text = "Lobby code: $code"
+
+        val startGameButton = mView.findViewById<Button>(R.id.startGameButton)
+
+        if (isHost) {
+            startGameButton.visibility = View.VISIBLE
+        }
+
+        startGameButton.setOnClickListener {
+            (activity as GameActivity).startGame()
+        }
+
+        return mView
     }
 }
