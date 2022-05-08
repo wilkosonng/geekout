@@ -8,7 +8,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scoreboardRecycler"
         android:layout_width="295dp"
-        android:layout_height="491dp"
+        android:layout_height="400dp"
         android:layout_below="@id/lobbyText"
         android:layout_centerInParent="true"
         android:layout_marginStart="50dp"

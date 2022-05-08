@@ -19,6 +19,11 @@ class GameAdapter(fragmentActivity: FragmentActivity):
     }
     private var mList: ArrayList<Fragment> = ArrayList()
 
+    // Solution to overwrite fragments adapted from here:
+    // https://stackoverflow.com/questions/57938930/remove-fragment-in-viewpager2-use-fragmentstateadapter-but-still-display
+
+    private var mIDs = mList.map { it.hashCode().toLong() }
+
     override fun getItemCount(): Int {
         return mList.size
     }
@@ -27,19 +32,21 @@ class GameAdapter(fragmentActivity: FragmentActivity):
         return mList[position]
     }
 
+    // Adds a fragment to the ViewPager
+
     fun addFrag(frag: Fragment) {
         mList.add(frag)
-        Handler(Looper.getMainLooper()).post {
-            notifyItemChanged(mList.size)
-        }
+        notifyItemChanged(mList.size)
     }
+
+    // Removes a fragment from the ViewPager
 
     fun removeFrag(frag: Fragment) {
         mList.remove(frag)
-        Handler(Looper.getMainLooper()).post {
-            notifyItemChanged(mList.size)
-        }
+        notifyItemChanged(mList.size)
     }
+
+    // Sets a fragment in the ViewPager
 
     fun setFrag(frag: Fragment, position: Int) {
         mList[position] = frag
@@ -59,8 +66,20 @@ class GameAdapter(fragmentActivity: FragmentActivity):
         notifyDataSetChanged()
     }
 
+    // Clears the fragment list
+
     fun clear() {
         mList.clear()
         notifyDataSetChanged()
+    }
+
+    // Overrides to allow for deletion of fragments
+
+    override fun getItemId(position: Int): Long {
+        return mList[position].hashCode().toLong()
+    }
+
+    override fun containsItem(itemID: Long): Boolean {
+        return mIDs.contains(itemID)
     }
 }
