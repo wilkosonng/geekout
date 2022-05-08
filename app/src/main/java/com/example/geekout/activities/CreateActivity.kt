@@ -14,7 +14,7 @@ import com.example.geekout.classes.Game
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class CreateActivity: Activity() {
+class  CreateActivity: Activity() {
     companion object {
         private const val TAG = "CREATE"
         private const val CODE_KEY = "code"
