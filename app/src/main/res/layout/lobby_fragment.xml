@@ -1,13 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.LobbyFragment">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/scoreboardRecycler"
+        android:layout_width="295dp"
+        android:layout_height="400dp"
+        android:layout_below="@id/lobbyText"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="50dp"
+        android:background="#92B8BAB7"
+        android:clipToPadding="true"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/player_score"
+        tools:visibility="visible" />
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-</FrameLayout>
+        android:id="@+id/lobbyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="25sp"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/startGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="320dp"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="#1B6513"
+        android:text="@string/startGame"
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
+</RelativeLayout>

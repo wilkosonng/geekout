@@ -5,16 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.geekout.R
-import com.example.geekout.activities.GameActivity
 import com.example.geekout.adapters.ScoreboardAdapter
 import com.example.geekout.classes.Game
 
-class LobbyFragment(private val game: Game, private val code: String, private val isHost: Boolean) : Fragment() {
+class ScoreboardFragment(private val game: Game) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,7 +19,7 @@ class LobbyFragment(private val game: Game, private val code: String, private va
     ): View {
         // Inflate the layout for this fragment
 
-        val mView =  inflater.inflate(R.layout.lobby_fragment, container, false)
+        val mView =  inflater.inflate(R.layout.scoreboard_fragment, container, false)
 
         // Sets all of the view parameters
 
@@ -33,19 +30,6 @@ class LobbyFragment(private val game: Game, private val code: String, private va
         mScoreboardRecyclerView.layoutManager = LinearLayoutManager(context)
 
         mScoreboardAdapter.set(game.getPlayers())
-
-        val mLobbyCodeTextView = mView.findViewById<TextView>(R.id.lobbyText)
-        mLobbyCodeTextView.text = "Lobby code: $code"
-
-        val startGameButton = mView.findViewById<Button>(R.id.startGameButton)
-
-        if (isHost) {
-            startGameButton.visibility = View.VISIBLE
-        }
-
-        startGameButton.setOnClickListener {
-            (activity as GameActivity).startGame()
-        }
 
         return mView
     }
