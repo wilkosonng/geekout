@@ -7,6 +7,11 @@
     <string name="createGame">Create Lobby</string>
     <string name="defaultCode">Lobby Code: </string>
     <string name="startGame">Start Game</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Constant Emojis used for Cards-->
+    <string name="redCircle">🔴</string>
+    <string name="blueCircle">🔵</string>
+    <string name="yellowCircle">🟡</string>
+    <string name="greenCircle">🟢</string>
+    <string name="blackCircle">⚫</string>
 </resources>

@@ -1,26 +1,28 @@
 package com.example.geekout.activities
 
-import android.app.Activity
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.PreferenceManager
 import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.geekout.Card
-import com.example.geekout.CardGenerator
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.example.geekout.R
-import com.example.geekout.adapters.ScoreboardAdapter
+import com.example.geekout.adapters.GameAdapter
+import com.example.geekout.classes.Card
+import com.example.geekout.fragments.CardGenerator
 import com.example.geekout.classes.Game
 import com.example.geekout.classes.Player
+import com.example.geekout.fragments.DrawFragment
+import com.example.geekout.fragments.LobbyFragment
+import com.example.geekout.fragments.ScoreboardFragment
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 import com.google.firebase.database.*
 
-class GameActivity(): Activity() {
+class GameActivity(): FragmentActivity() {
 
     companion object {
         private const val TAG = "GAME"
@@ -28,6 +30,9 @@ class GameActivity(): Activity() {
         private const val UN_KEY = "username"
         private const val ID_KEY = "id"
         private const val HOST_KEY = "host"
+
+        private const val LEADERBOARD_ICON = R.drawable.leaderboard_vector
+        private const val GAME_ICON = R.drawable.game_vector
     }
 
     private lateinit var mPlayer: Player
@@ -36,12 +41,14 @@ class GameActivity(): Activity() {
     private lateinit var mCode: String
     private var mGame = Game()
     private var isHost: Boolean = false
+    private var mTurnCounter: Int = 0
+    private var mActiveCounter: Int = 0
+    private lateinit var mCardGenerator: CardGenerator
+    private lateinit var mFrags: ArrayList<Fragment>
 
-    private lateinit var mLobbyTextView: TextView
-    private lateinit var mScoreboardRecyclerView: RecyclerView
-    private lateinit var mScoreboardAdapter: ScoreboardAdapter
-    private lateinit var mStartGameButton: Button
-    private lateinit var mCardGenerator : CardGenerator
+    private lateinit var mGameAdapter: GameAdapter
+    private lateinit var mGamePager: ViewPager2
+    private lateinit var mTabLayout: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +57,17 @@ class GameActivity(): Activity() {
 
         setContentView(R.layout.game)
 
-        // Initializes Views
-
-        mLobbyTextView = findViewById(R.id.lobbyText)
-        mScoreboardRecyclerView = findViewById(R.id.scoreboardRecycler)
-        mStartGameButton = findViewById(R.id.startGameButton)
-
         // Initializes and attaches Adapters for ViewGroups
 
-        mScoreboardAdapter = ScoreboardAdapter(this)
-        mScoreboardRecyclerView.layoutManager = LinearLayoutManager(this)
-        mScoreboardRecyclerView.adapter = mScoreboardAdapter
+        mGamePager = findViewById(R.id.gamePager)
+        mGameAdapter = GameAdapter(this)
+        mTabLayout = findViewById(R.id.tabLayout)
+
+        mGamePager.adapter = mGameAdapter
+
+        TabLayoutMediator(mTabLayout, mGamePager) { tab, position ->
+            tab.icon = if(position == 0) getDrawable(GAME_ICON) else getDrawable(LEADERBOARD_ICON)
+        }.attach()
 
         // Initializes SharedPreferences and inputs Username, ID associated with client
 
@@ -74,24 +81,13 @@ class GameActivity(): Activity() {
         var playerID: String = intent.getStringExtra(ID_KEY).toString()
         var playerName: String = intent.getStringExtra(UN_KEY).toString()
 
-        // Displays Default Lobby Views
-
-        mScoreboardRecyclerView.visibility = View.VISIBLE
-        mLobbyTextView.visibility = View.VISIBLE
-
-        if (isHost) {
-            mStartGameButton.visibility = View.VISIBLE
-        }
-
-        // Sets default View states for Lobby
-
-        "Lobby Code: $mCode".also { mLobbyTextView.text = it }
-        
         // Initializes Database Reference
-        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.gamecards))
-//        var tst : Card = mCardGenerator.generateCard(Game.Roll.RED)
 
         mDatabase = FirebaseDatabase.getInstance().getReference("lobbies").child(mCode)
+
+        // Initializes card generator
+
+        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.gamecards))
 
         // Adds the player to the lobby using a transaction to ensure read/write safety.
 
@@ -118,8 +114,7 @@ class GameActivity(): Activity() {
                 currentData: DataSnapshot?
             ) {
                 if (currentData != null) {
-                    mGame = currentData.getValue(Game::class.java)!!
-                    drawGame(mGame)
+
                 }
             }
         })
@@ -140,7 +135,43 @@ class GameActivity(): Activity() {
                     val players = snapshot.getValue(type) as ArrayList<Player>
 
                     mGame.setPlayers(players)
-                    drawGame(mGame)
+
+                    // If a player leaves and re-indexes the players ArrayList, decrements the turn counter.
+
+                    if (isHost) {
+                        if (players.size == 1 && mGame.getState() != Game.State.LOBBY) {
+                            mDatabase.runTransaction(object: Transaction.Handler {
+                                override fun doTransaction(data: MutableData): Transaction.Result {
+                                    // If there is only 1 player remaining, ends the game.
+
+                                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                                    p.setState(Game.State.FINISH)
+
+                                    data.value = p
+                                    return Transaction.success(data)
+                                }
+
+                                override fun onComplete(
+                                    databaseError: DatabaseError?,
+                                    committed: Boolean,
+                                    currentData: DataSnapshot?
+                                ) {
+                                    Log.i(TAG, "Not enough players")
+                                }
+                            })
+                        }
+
+                        if (mGame.getTurn() != null && players[mTurnCounter % players.size] != mGame.getTurn()) {
+                            mTurnCounter--
+                        }
+
+                        if (mGame.getActive() != null && players[mActiveCounter % players.size] != mGame.getActive()) {
+                            mActiveCounter--
+                        }
+                    }
+
+                    drawGame()
                 }
             }
 
@@ -152,7 +183,14 @@ class GameActivity(): Activity() {
         if (isHost) {
             val actionsListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Records player responses.
 
+                        val type = object: GenericTypeIndicator<ArrayList<Game.Action>>() {}
+                        val actions = snapshot.getValue(type) as ArrayList<Game.Action>
+
+                        mGame.setActions(actions)
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -161,6 +199,30 @@ class GameActivity(): Activity() {
             }
 
             mDatabase.child("actions").addValueEventListener(actionsListener)
+
+            val stateListener = object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // When the game state is updated, performs actions
+
+                        when (snapshot.getValue(Game.State::class.java) as Game.State) {
+                            Game.State.DRAW -> {
+                                setCard()
+                            }
+
+                            else -> {
+
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            }
+
+            mDatabase.child("state").addValueEventListener(stateListener)
         } else {
             val stateListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -170,7 +232,7 @@ class GameActivity(): Activity() {
                         val state = snapshot.getValue(Game.State::class.java) as Game.State
                         mGame.setState(state)
 
-                        drawGame(mGame)
+                        drawGame()
                     }
                 }
 
@@ -179,15 +241,26 @@ class GameActivity(): Activity() {
                 }
             }
 
+            mDatabase.child("state").addValueEventListener(stateListener)
+
             val cardListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists()) {
+                        val card = snapshot.getValue(Card::class.java) as Card
 
+                        mGame.setCard(card)
+                        drawGame()
+
+                        (mFrags[0] as DrawFragment).playFlip()
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
 
                 }
             }
+
+            mDatabase.child("card").addValueEventListener(cardListener)
 
             val currPlayerListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -219,17 +292,6 @@ class GameActivity(): Activity() {
                 }
             }
         }
-
-        // Adds an onClick Listener to the StartGame Button
-
-        mStartGameButton.setOnClickListener {
-            if (mGame.getPlayers().size > 1) {
-                startGame()
-            } else {
-                Log.i(TAG, "Not enough players to start.")
-                Toast.makeText(this, "Not enough players", Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     // Todo: Implement more rigorous method for disconnections
@@ -251,7 +313,6 @@ class GameActivity(): Activity() {
                     // Adds player avatar back into list of available avatars.
 
                     p.removePlayer(mPlayer)
-                    mScoreboardAdapter.removePlayer(mPlayer)
                     p.addAvatar(mPlayer.getAvatar())
 
                     data.value = p
@@ -271,14 +332,51 @@ class GameActivity(): Activity() {
 
     // Starts the game and notifies clients.
 
-    private fun startGame() {
+    fun startGame() {
+//        if (mGame.getPlayers().size >= 2) {
+        if (mGame.getPlayers().size >= 0) {
+            mDatabase.runTransaction(object: Transaction.Handler {
+                override fun doTransaction(data: MutableData): Transaction.Result {
+                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                    // Sets the game state to DRAW
+
+                    p.setState(Game.State.DRAW)
+                    p.setTurn(mGame.getPlayers()[mTurnCounter % mGame.getPlayers().size])
+
+                    data.value = p
+                    return Transaction.success(data)
+                }
+
+                override fun onComplete(
+                    databaseError: DatabaseError?,
+                    committed: Boolean,
+                    currentData: DataSnapshot?
+                ) {
+                    Log.i(TAG, "Game Started")
+                    mGame = currentData?.getValue(Game::class.java)!!
+                    drawGame()
+                }
+            })
+        } else {
+            Log.i(TAG, "NOT ENOUGH PLAYERS")
+            Toast.makeText(this, "Need at least 2 Players", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Todo: Implement additional auxillary methods
+
+    private fun setCard() {
+        mGame.setCard(mCardGenerator.generateCard(mGame.rollColor()))
+
         mDatabase.runTransaction(object: Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
                 val p = data.getValue(Game::class.java)?: return Transaction.success(data)
 
                 // Sets the game state to DRAW
 
-                p.setState(Game.State.DRAW)
+                val card = mCardGenerator.generateCard(mGame.rollColor())
+                p.setCard(card)
 
                 data.value = p
                 return Transaction.success(data)
@@ -291,33 +389,27 @@ class GameActivity(): Activity() {
             ) {
                 Log.i(TAG, "Game Started")
                 mGame = currentData?.getValue(Game::class.java)!!
-                drawGame(mGame)
+
+                drawGame()
+
+                (mFrags[0] as DrawFragment).playFlip()
             }
         })
     }
 
-    // Todo: Implement additional auxillary methods
-
     // Draws the game UI depending on the game state.
     // Todo: Implement UI drawing.
 
-    private fun drawGame(game: Game) {
-        when (game.getState()) {
+    private fun drawGame() {
+        when (mGame.getState()) {
             Game.State.LOBBY -> {
-                mScoreboardAdapter.set(game.getPlayers())
+                mFrags = arrayListOf(LobbyFragment(mGame, mCode, isHost))
+                mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.DRAW -> {
-                mLobbyTextView.visibility = View.GONE
-
-                if (isHost) {
-                    mStartGameButton.visibility = View.GONE
-                }
-
-            }
-
-            Game.State.ROLL -> {
-
+                mFrags = arrayListOf(DrawFragment(mGame), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.BID -> {
@@ -341,8 +433,9 @@ class GameActivity(): Activity() {
             }
         }
     }
-    fun getTextFromRaw(myid : Int) : Array<String> {
-        var rawText = resources.openRawResource(myid).bufferedReader().use { it.readText() }
+
+    private fun getTextFromRaw(myID : Int) : Array<String> {
+        var rawText = resources.openRawResource(myID).bufferedReader().use { it.readText() }
         return rawText.split("[\r\n]+".toRegex()).toTypedArray()
     }
 }

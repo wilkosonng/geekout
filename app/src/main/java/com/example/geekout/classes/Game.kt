@@ -4,7 +4,7 @@ class Game() {
     // Specifies which state the game is in.
 
     enum class State {
-        LOBBY, DRAW, ROLL, BID, TASK, REVIEW, FINISH, HOST_DC
+        LOBBY, DRAW, BID, TASK, REVIEW, ROUND, FINISH, HOST_DC
     }
 
     // Specifies player actions
@@ -31,13 +31,13 @@ class Game() {
 
     private var players: ArrayList<Player> = ArrayList()
     private var answers: ArrayList<String> = ArrayList()
-    private var actions: HashMap<Player, Action> = HashMap()
-    private var currentBid: HashMap<Player, Int> = HashMap()
-    private var gameState: State = State.LOBBY
-    private var currentTurn: Player? = null
-    private var activePlayer: Player? = null
-    private var currentCard: Card? = null
-    private var currentColor: Roll? = null
+    private var actions: ArrayList<Action> = ArrayList()
+    private var bid: Int = -1
+    private var state: State = State.LOBBY
+    private var turn: Player? = null
+    private var active: Player? = null
+    private var highestBidder: Player? = null
+    private var card: Card? = null
     private var avatars: ArrayList<String> = arrayListOf(
         "🐍", "🐒", "🐕", "🐖", "🐇", "🐪", "🐘", "🦒", "🐀", "🦜",
         "🐢", "🦖", "🐬", "🦈", "🐅", "🐎", "🦥", "🦘", "🐋")
@@ -69,37 +69,37 @@ class Game() {
     // Getter for State
 
     fun getState(): State {
-        return gameState
+        return state
     }
 
     // Setter for State
 
-    fun setState(state: State) {
-        gameState = state
+    fun setState(newState: State) {
+        state = newState
     }
 
     // Getter for currentbid
 
-    fun getBid(): HashMap<Player, Int> {
-        return currentBid
+    fun getBid(): Int {
+        return bid
     }
 
     // Setter for currentBid
 
-    fun setBid(bid: HashMap<Player, Int>) {
-        currentBid = bid
+    fun setBid(newBid: Int) {
+        bid = newBid
     }
 
     // Getter for currentTurn
 
     fun getTurn(): Player? {
-        return currentTurn
+        return turn
     }
 
     // Setter for currentTurn
 
     fun setTurn(player: Player) {
-        currentTurn = player
+        turn = player
     }
 
     // Getter for Avatars
@@ -129,25 +129,25 @@ class Game() {
     // Getter for Active
 
     fun getActive(): Player? {
-        return activePlayer
+        return active
     }
 
     // Setter for Active
 
-    fun setActive(active: Player) {
-        activePlayer = active
+    fun setActive(player: Player) {
+        active = player
     }
 
     // Getter for Card
 
     fun getCard(): Card? {
-        return currentCard
+        return card
     }
 
     // Setter for Card
 
-    fun setCard(card: Card) {
-        currentCard = card
+    fun setCard(newCard: Card) {
+        card = newCard
     }
 
     // Getter for Answers
@@ -164,14 +164,14 @@ class Game() {
 
     // Getter for Actions
 
-    fun getActions(): HashMap<Player, Action> {
+    fun getActions(): ArrayList<Action> {
         return actions
     }
 
     // Setter for Specific Player Action
 
-    fun submitAction(player: Player, action: Action) {
-        actions[player] = action
+    fun submitAction(pos: Int, action: Action) {
+        actions[pos] = action
     }
 
     // Clears actions
@@ -182,20 +182,20 @@ class Game() {
 
     // Setter for Actions
 
-    fun setActions(actionsMap: HashMap<Player, Action>) {
-        actions = actionsMap
+    fun setActions(actionsList: ArrayList<Action>) {
+        actions = actionsList
     }
 
-    // Getter for Color
+    // Getter for highest bidder
 
-    fun getColor(): Roll? {
-        return currentColor
+    fun getHighestBidder(): Player? {
+        return highestBidder
     }
 
-    // Setter for color
+    // Setter for highest bidder
 
-    fun setColor(color: Roll) {
-        currentColor = color
+    fun setHighestBidder(player: Player) {
+        highestBidder = player
     }
 
     // Rolls a color to be used.
@@ -207,6 +207,6 @@ class Game() {
     // Public function for firebase database to determine if the lobby can be joined.
 
     fun isJoinable(): Boolean {
-        return (players.size < 16 && gameState == State.LOBBY)
+        return (players.size < 16 && state == State.LOBBY)
     }
 }

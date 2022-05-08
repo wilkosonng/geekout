@@ -1,9 +1,11 @@
-package com.example.geekout
+package com.example.geekout.fragments
+
+import com.example.geekout.classes.Card
+import com.example.geekout.classes.Game
 
 import android.content.res.Resources
 import java.io.File
 import java.io.InputStream
-import com.example.geekout.classes.Game
 
 class CardGenerator (var gameCards : Array<String>){
     // TODO Add libraries and actual card generation
