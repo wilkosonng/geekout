@@ -7,20 +7,20 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.geekout.R
 import com.example.geekout.adapters.GameAdapter
 import com.example.geekout.classes.Card
-import com.example.geekout.fragments.CardGenerator
 import com.example.geekout.classes.Game
 import com.example.geekout.classes.Player
-import com.example.geekout.fragments.DrawFragment
-import com.example.geekout.fragments.LobbyFragment
-import com.example.geekout.fragments.ScoreboardFragment
+import com.example.geekout.fragments.*
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 import com.google.firebase.database.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GameActivity(): FragmentActivity() {
 
@@ -41,10 +41,10 @@ class GameActivity(): FragmentActivity() {
     private lateinit var mCode: String
     private var mGame = Game()
     private var isHost: Boolean = false
+    private var mFrags: ArrayList<Fragment> = ArrayList()
     private var mTurnCounter: Int = 0
     private var mActiveCounter: Int = 0
     private lateinit var mCardGenerator: CardGenerator
-    private lateinit var mFrags: ArrayList<Fragment>
 
     private lateinit var mGameAdapter: GameAdapter
     private lateinit var mGamePager: ViewPager2
@@ -139,29 +139,6 @@ class GameActivity(): FragmentActivity() {
                     // If a player leaves and re-indexes the players ArrayList, decrements the turn counter.
 
                     if (isHost) {
-                        if (players.size == 1 && mGame.getState() != Game.State.LOBBY) {
-                            mDatabase.runTransaction(object: Transaction.Handler {
-                                override fun doTransaction(data: MutableData): Transaction.Result {
-                                    // If there is only 1 player remaining, ends the game.
-
-                                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
-
-                                    p.setState(Game.State.FINISH)
-
-                                    data.value = p
-                                    return Transaction.success(data)
-                                }
-
-                                override fun onComplete(
-                                    databaseError: DatabaseError?,
-                                    committed: Boolean,
-                                    currentData: DataSnapshot?
-                                ) {
-                                    Log.i(TAG, "Not enough players")
-                                }
-                            })
-                        }
-
                         if (mGame.getTurn() != null && players[mTurnCounter % players.size] != mGame.getTurn()) {
                             mTurnCounter--
                         }
@@ -171,7 +148,13 @@ class GameActivity(): FragmentActivity() {
                         }
                     }
 
-                    drawGame()
+                    mFrags = if (mFrags.size == 2) {
+                        arrayListOf(mFrags[0], ScoreboardFragment(mGame))
+                    } else {
+                        arrayListOf(LobbyFragment(mGame, mCode, isHost))
+                    }
+
+                    mGameAdapter.setFrags(mFrags)
                 }
             }
 
@@ -199,30 +182,6 @@ class GameActivity(): FragmentActivity() {
             }
 
             mDatabase.child("actions").addValueEventListener(actionsListener)
-
-            val stateListener = object: ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        // When the game state is updated, performs actions
-
-                        when (snapshot.getValue(Game.State::class.java) as Game.State) {
-                            Game.State.DRAW -> {
-                                setCard()
-                            }
-
-                            else -> {
-
-                            }
-                        }
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            }
-
-            mDatabase.child("state").addValueEventListener(stateListener)
         } else {
             val stateListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -250,8 +209,6 @@ class GameActivity(): FragmentActivity() {
 
                         mGame.setCard(card)
                         drawGame()
-
-                        (mFrags[0] as DrawFragment).playFlip()
                     }
                 }
 
@@ -312,6 +269,8 @@ class GameActivity(): FragmentActivity() {
 
                     // Adds player avatar back into list of available avatars.
 
+                    p.removeAction(p.getPlayers().indexOf(mPlayer))
+
                     p.removePlayer(mPlayer)
                     p.addAvatar(mPlayer.getAvatar())
 
@@ -341,6 +300,7 @@ class GameActivity(): FragmentActivity() {
 
                     // Sets the game state to DRAW
 
+                    Log.i(TAG, "STARTING GAME")
                     p.setState(Game.State.DRAW)
                     p.setTurn(mGame.getPlayers()[mTurnCounter % mGame.getPlayers().size])
 
@@ -353,9 +313,8 @@ class GameActivity(): FragmentActivity() {
                     committed: Boolean,
                     currentData: DataSnapshot?
                 ) {
-                    Log.i(TAG, "Game Started")
                     mGame = currentData?.getValue(Game::class.java)!!
-                    drawGame()
+                    setCard()
                 }
             })
         } else {
@@ -365,6 +324,34 @@ class GameActivity(): FragmentActivity() {
     }
 
     // Todo: Implement additional auxillary methods
+
+    private fun setState(state: Game.State, drawAfterwards: Boolean) {
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the game state to State
+
+                p.setState(state)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                Log.i(TAG, "Set to ${mGame.getState()}")
+
+                if (drawAfterwards) {
+                    drawGame()
+                }
+            }
+        })
+    }
 
     private fun setCard() {
         mGame.setCard(mCardGenerator.generateCard(mGame.rollColor()))
@@ -387,14 +374,18 @@ class GameActivity(): FragmentActivity() {
                 committed: Boolean,
                 currentData: DataSnapshot?
             ) {
-                Log.i(TAG, "Game Started")
                 mGame = currentData?.getValue(Game::class.java)!!
+                Log.i(TAG, "Card set to ${mGame.getCard()?.getText()}")
 
                 drawGame()
-
-                (mFrags[0] as DrawFragment).playFlip()
             }
         })
+    }
+
+    fun onFlipEnd() {
+        if(isHost) {
+            setState(Game.State.BID, true)
+        }
     }
 
     // Draws the game UI depending on the game state.
@@ -408,12 +399,13 @@ class GameActivity(): FragmentActivity() {
             }
 
             Game.State.DRAW -> {
-                mFrags = arrayListOf(DrawFragment(mGame), ScoreboardFragment(mGame))
+                mFrags = arrayListOf(DrawFragment(mGame, this), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.BID -> {
-
+                mFrags = arrayListOf(BidFragment(mGame), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.TASK -> {
@@ -421,6 +413,10 @@ class GameActivity(): FragmentActivity() {
             }
 
             Game.State.REVIEW -> {
+
+            }
+
+            Game.State.ROUND -> {
 
             }
 
