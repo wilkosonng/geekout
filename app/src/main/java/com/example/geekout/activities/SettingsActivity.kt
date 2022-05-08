@@ -16,7 +16,7 @@ class SettingsActivity: Activity() {
         setContentView(R.layout.settings)
         val showButton = findViewById<Button>(R.id.showInput)
 
-
+//username must be under 12 characters
         val editText = findViewById<EditText>(R.id.editText)
 
 
