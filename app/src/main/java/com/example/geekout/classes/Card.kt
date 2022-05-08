@@ -16,11 +16,11 @@ class Card(private var bid : Int, private val text : String, private val color: 
     }
 
     public fun getText() : String {
-        return text
+        return "$bid $text"
     }
 
     public fun getFullText() : String {
-        return "$bid $text"
+        return ""
     }
 
     fun getColor(): Game.Roll {
