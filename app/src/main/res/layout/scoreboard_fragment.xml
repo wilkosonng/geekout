@@ -19,4 +19,5 @@
         android:scrollbars="vertical"
         tools:listitem="@layout/player_score"
         tools:visibility="visible" />
+
 </RelativeLayout>

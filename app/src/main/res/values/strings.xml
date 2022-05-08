@@ -7,6 +7,10 @@
     <string name="createGame">Create Lobby</string>
     <string name="defaultCode">Lobby Code: </string>
     <string name="startGame">Start Game</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="submit">Submit</string>
+    <string name="pass">Pass</string>
 
     <!-- Constant Emojis used for Cards-->
     <string name="redCircle">🔴</string>
@@ -14,5 +18,6 @@
     <string name="yellowCircle">🟡</string>
     <string name="greenCircle">🟢</string>
     <string name="blackCircle">⚫</string>
+    
     <string name="outgeek">1. Set your username in the "Settings" tab\n2. Either Join a Lobby if you already have a lobby code or Create a Lobby\n3. Start Game \n4. Flip the card (the category is chosen at random for you) and perform the challenge\n5. If you are successful in completing the task, you earn points. If not, you do not earn any points\n6. First player to reach 5 points wins the game (slide to the right of the screen to see your score) </string>
 </resources>
