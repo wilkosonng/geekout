@@ -12,8 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import com.example.geekout.Card
 import com.example.geekout.R
 import com.example.geekout.adapters.GameAdapter
 import com.example.geekout.fragments.CardGenerator
@@ -45,7 +45,7 @@ class GameActivity(): FragmentActivity() {
     private lateinit var mCode: String
     private var mGame = Game()
     private var isHost: Boolean = false
-    private var mCardGenerator: CardGenerator = CardGenerator()
+    private lateinit  var mCardGenerator: CardGenerator
 
     private lateinit var mGameAdapter: GameAdapter
     private lateinit var mGamePager: ViewPager2
@@ -85,6 +85,10 @@ class GameActivity(): FragmentActivity() {
         // Initializes Database Reference
 
         mDatabase = FirebaseDatabase.getInstance().getReference("lobbies").child(mCode)
+
+        // Initializes card generator
+
+        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.gamecards))
 
         // Adds the player to the lobby using a transaction to ensure read/write safety.
 
@@ -320,5 +324,10 @@ class GameActivity(): FragmentActivity() {
 
     fun getGame(): Game {
         return mGame
+    }
+
+    private fun getTextFromRaw(myID : Int) : Array<String> {
+        var rawText = resources.openRawResource(myID).bufferedReader().use { it.readText() }
+        return rawText.split("[\r\n]+".toRegex()).toTypedArray()
     }
 }
