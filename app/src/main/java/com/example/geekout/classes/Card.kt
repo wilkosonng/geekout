@@ -1,8 +1,8 @@
 package com.example.geekout.classes
 
 class Card(private var bid : Int, private val text : String, private val color: Game.Roll) {
-    // Default constructor for Firebase serialization
 
+    // Default constructor for Firebase serialization
     constructor() : this(-1, "Invalid", Game.Roll.RED) {
 
     }
@@ -16,11 +16,13 @@ class Card(private var bid : Int, private val text : String, private val color: 
     }
 
     public fun getText() : String {
-        return text
-    }
-
-    public fun getFullText() : String {
-        return "$bid $text"
+        var bidText = when (bid) {
+            2 -> "Two"
+            3 -> "Three"
+            4 -> "Four"
+            else -> "Error:"
+        }
+        return "$bidText $text"
     }
 
     fun getColor(): Game.Roll {
