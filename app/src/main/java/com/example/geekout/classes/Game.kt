@@ -4,7 +4,7 @@ class Game() {
     // Specifies which state the game is in.
 
     enum class State {
-        LOBBY, DRAW, ROLL, BID, TASK, REVIEW, FINISH, HOST_DC
+        LOBBY, DRAW, BID, TASK, REVIEW, FINISH, HOST_DC
     }
 
     // Specifies player actions
@@ -37,7 +37,6 @@ class Game() {
     private var currentTurn: Player? = null
     private var activePlayer: Player? = null
     private var currentCard: Card? = null
-    private var currentColor: Roll? = null
     private var avatars: ArrayList<String> = arrayListOf(
         "🐍", "🐒", "🐕", "🐖", "🐇", "🐪", "🐘", "🦒", "🐀", "🦜",
         "🐢", "🦖", "🐬", "🦈", "🐅", "🐎", "🦥", "🦘", "🐋")
@@ -184,18 +183,6 @@ class Game() {
 
     fun setActions(actionsMap: HashMap<Player, Action>) {
         actions = actionsMap
-    }
-
-    // Getter for Color
-
-    fun getColor(): Roll? {
-        return currentColor
-    }
-
-    // Setter for color
-
-    fun setColor(color: Roll) {
-        currentColor = color
     }
 
     // Rolls a color to be used.
