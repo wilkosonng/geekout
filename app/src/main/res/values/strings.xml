@@ -8,4 +8,10 @@
     <string name="defaultCode">Lobby Code: </string>
     <string name="startGame">Start Game</string>
 
+    <!-- Constant Emojis used for Cards-->
+    <string name="redCircle">🔴</string>
+    <string name="blueCircle">🔵</string>
+    <string name="yellowCircle">🟡</string>
+    <string name="greenCircle">🟢</string>
+    <string name="blackCircle">⚫</string>
 </resources>
