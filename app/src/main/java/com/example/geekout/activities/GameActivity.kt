@@ -9,16 +9,24 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.geekout.R
+import com.example.geekout.adapters.GameAdapter
+import com.example.geekout.fragments.CardGenerator
 import com.example.geekout.adapters.ScoreboardAdapter
 import com.example.geekout.classes.Game
 import com.example.geekout.classes.Player
+import com.example.geekout.fragments.LobbyFragment
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 import com.google.firebase.database.*
 
-class GameActivity(): Activity() {
+class GameActivity(): FragmentActivity() {
 
     companion object {
         private const val TAG = "GAME"
@@ -26,6 +34,9 @@ class GameActivity(): Activity() {
         private const val UN_KEY = "username"
         private const val ID_KEY = "id"
         private const val HOST_KEY = "host"
+
+        private const val LEADERBOARD_ICON = R.drawable.leaderboard_vector
+        private const val GAME_ICON = R.drawable.game_vector
     }
 
     private lateinit var mPlayer: Player
@@ -34,12 +45,11 @@ class GameActivity(): Activity() {
     private lateinit var mCode: String
     private var mGame = Game()
     private var isHost: Boolean = false
+    private var mCardGenerator: CardGenerator = CardGenerator()
 
-    private lateinit var mLobbyTextView: TextView
-    private lateinit var mScoreboardRecyclerView: RecyclerView
-    private lateinit var mScoreboardAdapter: ScoreboardAdapter
-    private lateinit var mStartGameButton: Button
-    private lateinit var mCardGenerator : CardGenerator
+    private lateinit var mGameAdapter: GameAdapter
+    private lateinit var mGamePager: ViewPager2
+    private lateinit var mTabLayout: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,17 +58,17 @@ class GameActivity(): Activity() {
 
         setContentView(R.layout.game)
 
-        // Initializes Views
-
-        mLobbyTextView = findViewById(R.id.lobbyText)
-        mScoreboardRecyclerView = findViewById(R.id.scoreboardRecycler)
-        mStartGameButton = findViewById(R.id.startGameButton)
-
         // Initializes and attaches Adapters for ViewGroups
 
-        mScoreboardAdapter = ScoreboardAdapter(this)
-        mScoreboardRecyclerView.layoutManager = LinearLayoutManager(this)
-        mScoreboardRecyclerView.adapter = mScoreboardAdapter
+        mGamePager = findViewById(R.id.gamePager)
+        mGameAdapter = GameAdapter(this)
+        mTabLayout = findViewById(R.id.tabLayout)
+
+        mGamePager.adapter = mGameAdapter
+
+        TabLayoutMediator(mTabLayout, mGamePager, true, false) { tab, position ->
+            tab.icon = if(position == 0) getDrawable(GAME_ICON) else getDrawable(LEADERBOARD_ICON)
+        }.attach()
 
         // Initializes SharedPreferences and inputs Username, ID associated with client
 
@@ -71,19 +81,6 @@ class GameActivity(): Activity() {
 
         var playerID: String = intent.getStringExtra(ID_KEY).toString()
         var playerName: String = intent.getStringExtra(UN_KEY).toString()
-
-        // Displays Default Lobby Views
-
-        mScoreboardRecyclerView.visibility = View.VISIBLE
-        mLobbyTextView.visibility = View.VISIBLE
-
-        if (isHost) {
-            mStartGameButton.visibility = View.VISIBLE
-        }
-
-        // Sets default View states for Lobby
-
-        "Lobby Code: $mCode".also { mLobbyTextView.text = it }
 
         // Initializes Database Reference
 
@@ -114,8 +111,7 @@ class GameActivity(): Activity() {
                 currentData: DataSnapshot?
             ) {
                 if (currentData != null) {
-                    mGame = currentData.getValue(Game::class.java)!!
-                    drawGame(mGame)
+
                 }
             }
         })
@@ -136,7 +132,7 @@ class GameActivity(): Activity() {
                     val players = snapshot.getValue(type) as ArrayList<Player>
 
                     mGame.setPlayers(players)
-                    drawGame(mGame)
+                    drawGame()
                 }
             }
 
@@ -166,7 +162,7 @@ class GameActivity(): Activity() {
                         val state = snapshot.getValue(Game.State::class.java) as Game.State
                         mGame.setState(state)
 
-                        drawGame(mGame)
+                        drawGame()
                     }
                 }
 
@@ -215,17 +211,6 @@ class GameActivity(): Activity() {
                 }
             }
         }
-
-        // Adds an onClick Listener to the StartGame Button
-
-        mStartGameButton.setOnClickListener {
-            if (mGame.getPlayers().size > 1) {
-                startGame()
-            } else {
-                Log.i(TAG, "Not enough players to start.")
-                Toast.makeText(this, "Not enough players", Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     // Todo: Implement more rigorous method for disconnections
@@ -247,7 +232,6 @@ class GameActivity(): Activity() {
                     // Adds player avatar back into list of available avatars.
 
                     p.removePlayer(mPlayer)
-                    mScoreboardAdapter.removePlayer(mPlayer)
                     p.addAvatar(mPlayer.getAvatar())
 
                     data.value = p
@@ -267,29 +251,34 @@ class GameActivity(): Activity() {
 
     // Starts the game and notifies clients.
 
-    private fun startGame() {
-        mDatabase.runTransaction(object: Transaction.Handler {
-            override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+    fun startGame() {
+        if (mGame.getPlayers().size >= 2) {
+            mDatabase.runTransaction(object: Transaction.Handler {
+                override fun doTransaction(data: MutableData): Transaction.Result {
+                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
 
-                // Sets the game state to DRAW
+                    // Sets the game state to DRAW
 
-                p.setState(Game.State.DRAW)
+                    p.setState(Game.State.DRAW)
 
-                data.value = p
-                return Transaction.success(data)
-            }
+                    data.value = p
+                    return Transaction.success(data)
+                }
 
-            override fun onComplete(
-                databaseError: DatabaseError?,
-                committed: Boolean,
-                currentData: DataSnapshot?
-            ) {
-                Log.i(TAG, "Game Started")
-                mGame = currentData?.getValue(Game::class.java)!!
-                drawGame(mGame)
-            }
-        })
+                override fun onComplete(
+                    databaseError: DatabaseError?,
+                    committed: Boolean,
+                    currentData: DataSnapshot?
+                ) {
+                    Log.i(TAG, "Game Started")
+                    mGame = currentData?.getValue(Game::class.java)!!
+                    drawGame()
+                }
+            })
+        } else {
+            Log.i(TAG, "NOT ENOUGH PLAYERS")
+            Toast.makeText(this, "Need at least 2 Players", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // Todo: Implement additional auxillary methods
@@ -297,22 +286,13 @@ class GameActivity(): Activity() {
     // Draws the game UI depending on the game state.
     // Todo: Implement UI drawing.
 
-    private fun drawGame(game: Game) {
-        when (game.getState()) {
+    private fun drawGame() {
+        when (mGame.getState()) {
             Game.State.LOBBY -> {
-                mScoreboardAdapter.set(game.getPlayers())
+                mGameAdapter.setFrags(arrayListOf(LobbyFragment(mGame, mCode, isHost)))
             }
 
             Game.State.DRAW -> {
-                mLobbyTextView.visibility = View.GONE
-
-                if (isHost) {
-                    mStartGameButton.visibility = View.GONE
-                }
-
-            }
-
-            Game.State.ROLL -> {
 
             }
 
@@ -336,5 +316,9 @@ class GameActivity(): Activity() {
 
             }
         }
+    }
+
+    fun getGame(): Game {
+        return mGame
     }
 }
