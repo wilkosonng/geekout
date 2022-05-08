@@ -52,6 +52,10 @@ class TaskFragment(private val game: Game) : Fragment() {
             }
         }
 
+        // Add Scoreboard fragment
+        
+        // Add submit button
+
         return mView
     }
 }
