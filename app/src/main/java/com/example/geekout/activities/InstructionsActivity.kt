@@ -14,8 +14,18 @@ class InstructionsActivity: Activity() {
         // Sets the Content View to the default view: Menu
         setContentView(R.layout.instructions)
         val textView = findViewById<TextView>(R.id.text_view_id) as TextView
-        textView?.setOnClickListener{ Toast.makeText(this@InstructionsActivity,
-            R.string.instructions, Toast.LENGTH_LONG).show() }
+        textView?.setOnClickListener {
+            Toast.makeText(
+                this@InstructionsActivity,
+                R.string.instructions, Toast.LENGTH_LONG
+            ).show()
+            val textView1 = findViewById<TextView>(R.id.text_view_id1) as TextView
+            textView1?.setOnClickListener {
+                Toast.makeText(
+                    this@InstructionsActivity,
+                    R.string.instructions, Toast.LENGTH_LONG
+                ).show()
+            }
+        }
     }
-
 }
