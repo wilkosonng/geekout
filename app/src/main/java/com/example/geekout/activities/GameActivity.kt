@@ -356,8 +356,6 @@ class GameActivity(): FragmentActivity() {
     }
 
     private fun setCard() {
-        mGame.setCard(mCardGenerator.generateCard(mGame.rollColor()))
-
         mDatabase.runTransaction(object: Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
                 val p = data.getValue(Game::class.java)?: return Transaction.success(data)
@@ -377,7 +375,6 @@ class GameActivity(): FragmentActivity() {
                 currentData: DataSnapshot?
             ) {
                 mGame = currentData?.getValue(Game::class.java)!!
-                Log.i(TAG, "Card set to ${mGame.getCard()?.getText()}")
 
                 drawGame()
             }
