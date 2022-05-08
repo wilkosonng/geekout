@@ -35,7 +35,7 @@
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/colorText"
             android:text="Name 3 Video Games with Monkeys"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </RelativeLayout>
 
     <TextView

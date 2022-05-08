@@ -54,7 +54,7 @@ class DrawFragment(private val game: Game,  private val mActivity: GameActivity)
         cardColor = mView.findViewById(R.id.colorText)
 
         if (game.getCard() != null) {
-            cardText.text = game.getCard()!!.getText()
+            cardText.text = game.getCard()!!.cardInfo()
             cardColor.text = when (game.getCard()!!.getColor()) {
                 Game.Roll.RED -> getString(RED)
                 Game.Roll.BLUE -> getString(BLUE)
