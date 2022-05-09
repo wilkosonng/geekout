@@ -7,7 +7,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scoreboardRecycler"
-        android:layout_width="295dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:layout_marginStart="50dp"
@@ -15,9 +15,6 @@
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="50dp"
         android:background="#92B8BAB7"
-        android:clipToPadding="true"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/player_score"
         tools:visibility="visible" />
 
 </RelativeLayout>
