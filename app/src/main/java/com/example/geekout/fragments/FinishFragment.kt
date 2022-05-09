@@ -34,7 +34,7 @@ class FinishFragment(private val game: Game) : Fragment() {
         // Sets view values
 
         finishText = mView.findViewById(R.id.finishText)
-        finishText.text = "🏆 Congratulations to ${game.getActive()?.getName()} on earning your fifth and final point to win the game! 🏆"
+        finishText.text = "🏆 Congratulations to ${game.getActive()?.getName()} on earning your tenth and final point to win the game! 🏆"
 
         return mView
     }
