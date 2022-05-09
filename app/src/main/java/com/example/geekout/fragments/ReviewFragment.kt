@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -25,6 +26,8 @@ class ReviewFragment(private val game: Game) : Fragment() {
     private lateinit var cardBackView: ImageView
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
+    private lateinit var acceptButton: Button
+    private lateinit var rejectButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +54,7 @@ class ReviewFragment(private val game: Game) : Fragment() {
                 Game.Roll.BLACK -> getString(BLACK)
             }
         }
+
 
         return mView
     }
