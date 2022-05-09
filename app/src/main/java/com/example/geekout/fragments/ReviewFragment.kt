@@ -33,7 +33,6 @@ class ReviewFragment(private val game: Game, private val mPlayer: Player) : Frag
     private lateinit var cardColor: TextView
     private lateinit var approveAnswers: Button
     private lateinit var rejectAnswers: Button
-    private lateinit var notifTextView: TextView
 
 
     override fun onCreateView(
@@ -51,7 +50,6 @@ class ReviewFragment(private val game: Game, private val mPlayer: Player) : Frag
         cardColor = mView.findViewById(R.id.colorText)
         approveAnswers = mView.findViewById(R.id.submitButton)
         rejectAnswers = mView.findViewById(R.id.passButton)
-        notifTextView = mView.findViewById(R.id.notifText)
 
         if (game.getCard() != null) {
             cardText.text = game.getCard()!!.cardInfo()
@@ -62,10 +60,6 @@ class ReviewFragment(private val game: Game, private val mPlayer: Player) : Frag
                 Game.Roll.YELLOW -> getString(YELLOW)
                 Game.Roll.BLACK -> getString(BLACK)
             }
-        }
-
-        if (mPlayer == game.getActive()) {
-            notifTextView.visibility = View.GONE
         }
 
         val mReviewAdapter = ReviewAdapter(requireContext())

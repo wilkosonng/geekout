@@ -29,10 +29,10 @@ class TaskFragment(private val game: Game, private val mPlayer: Player) : Fragme
     }
 
     private lateinit var cardFrontView: RelativeLayout
-    private lateinit var cardBackView: ImageView
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
     private lateinit var submitAnswers: Button
+    private lateinit var notifTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +48,7 @@ class TaskFragment(private val game: Game, private val mPlayer: Player) : Fragme
         cardText = mView.findViewById(R.id.cardInfo)
         cardColor = mView.findViewById(R.id.colorText)
         submitAnswers = mView.findViewById(R.id.submitAnswers)
+        notifTextView = mView.findViewById(R.id.notifText)
 
         if (game.getCard() != null) {
             cardText.text = game.getCard()!!.cardInfo()
@@ -71,6 +72,9 @@ class TaskFragment(private val game: Game, private val mPlayer: Player) : Fragme
         if (game.getActive() != mPlayer) {
             mTaskRecyclerView.visibility = View.GONE
             submitAnswers.visibility = View.GONE
+            "Waiting for ${game.getActive()?.getName()} to submit answers...".also { notifTextView.text = it }
+        } else {
+            notifTextView.visibility = View.GONE
         }
 
         val mList = ArrayList<String>()
