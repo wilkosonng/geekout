@@ -184,7 +184,6 @@ class GameActivity() : FragmentActivity() {
                                 return
                             }
                         } else if (mGame.getState() == Game.State.REVIEW) {
-                            Log.i(TAG, "ACTION LISTENER CALL")
 
                             var approvals = 0
                             var vetos = 0
@@ -769,6 +768,7 @@ class GameActivity() : FragmentActivity() {
                     }
 
                     p.setActions(newActions)
+                    p.setAnswers(ArrayList())
 
                     data.value = p
                     return Transaction.success(data)
