@@ -99,7 +99,7 @@ class BidFragment(private val game: Game, private val mPlayer: Player) : Fragmen
         }
 
         if (game.getTurn() != null) {
-            val player = game.getHighestBidder()
+            val player = game.getActive()
 
             turnNameView.text = player?.getName()
             turnAvatarView.text = player?.getAvatar()
