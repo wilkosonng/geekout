@@ -17,7 +17,7 @@ class TaskAdapter(private val context: Context):
 
     companion object {
         private const val TAG = "SCOREBOARD ADAPTER"
-        private const val PLAYER_TYPE = R.layout.player_score
+        private const val PLAYER_TYPE = R.layout.input_item
     }
 
     private var mItems = ArrayList<String>()
@@ -27,6 +27,10 @@ class TaskAdapter(private val context: Context):
         Handler(Looper.getMainLooper()).post {
             notifyDataSetChanged()
         }
+    }
+
+    fun get(): ArrayList<String> {
+        return mItems
     }
 
     fun set(responseList: ArrayList<String>) {
