@@ -2,6 +2,7 @@ package com.example.geekout.activities
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.CountDownTimer
 import androidx.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
@@ -20,6 +21,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GameActivity() : FragmentActivity() {
@@ -181,7 +183,9 @@ class GameActivity() : FragmentActivity() {
                             } else {
                                 return
                             }
-                        } else {
+                        } else if (mGame.getState() == Game.State.REVIEW) {
+                            Log.i(TAG, "ACTION LISTENER CALL")
+
                             var approvals = 0
                             var vetos = 0
                             var total = 0
@@ -209,6 +213,8 @@ class GameActivity() : FragmentActivity() {
 
                                         val player =
                                             p.getPlayers()[p.getPlayers().indexOf(p.getActive())]
+
+                                        Log.i(TAG, "ADDING POINTS")
                                         player.addPoints(points)
 
                                         if (player.getPoints() == 5) {
@@ -217,6 +223,10 @@ class GameActivity() : FragmentActivity() {
                                         } else {
                                             Log.i(TAG, "INTO STATE ROUND")
                                             p.setState(Game.State.ROUND)
+                                            lifecycleScope.launch {
+                                                delay(4000L)
+                                                resetRound()
+                                            }
                                         }
 
                                         data.value = p
@@ -229,7 +239,6 @@ class GameActivity() : FragmentActivity() {
                                         currentData: DataSnapshot?
                                     ) {
                                         mGame = currentData?.getValue(Game::class.java)!!
-
                                         drawGame()
                                     }
                                 })
@@ -436,8 +445,7 @@ class GameActivity() : FragmentActivity() {
     // Starts the game and notifies clients.
 
     fun startGame() {
-//        if (mGame.getPlayers().size >= 2) {
-        if (mGame.getPlayers().size >= 0) {
+        if (mGame.getPlayers().size >= 2) {
             mDatabase.runTransaction(object : Transaction.Handler {
                 override fun doTransaction(data: MutableData): Transaction.Result {
                     val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
@@ -749,31 +757,33 @@ class GameActivity() : FragmentActivity() {
     }
 
     fun resetRound() {
-        mDatabase.runTransaction(object : Transaction.Handler {
-            override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
-                mTurnCounter++
+        if (isHost) {
+            mDatabase.runTransaction(object : Transaction.Handler {
+                override fun doTransaction(data: MutableData): Transaction.Result {
+                    val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
+                    mTurnCounter++
 
-                val newActions = ArrayList<Game.Action>()
-                for (i in 1..p.getPlayers().size) {
-                    newActions.add(Game.Action.NONE)
+                    val newActions = ArrayList<Game.Action>()
+                    for (i in 1..p.getPlayers().size) {
+                        newActions.add(Game.Action.NONE)
+                    }
+
+                    p.setActions(newActions)
+
+                    data.value = p
+                    return Transaction.success(data)
                 }
 
-                p.setActions(newActions)
-
-                data.value = p
-                return Transaction.success(data)
-            }
-
-            override fun onComplete(
-                databaseError: DatabaseError?,
-                committed: Boolean,
-                currentData: DataSnapshot?
-            ) {
-                mGame = currentData?.getValue(Game::class.java)!!
-                startGame()
-            }
-        })
+                override fun onComplete(
+                    databaseError: DatabaseError?,
+                    committed: Boolean,
+                    currentData: DataSnapshot?
+                ) {
+                    mGame = currentData?.getValue(Game::class.java)!!
+                    startGame()
+                }
+            })
+        }
     }
 
     private fun getTextFromRaw(myID: Int): Array<String> {
