@@ -40,12 +40,11 @@ class ReviewFragment(private val game: Game) : Fragment() {
     ): View {
         // Inflate the layout for this fragment
 
-        val mView = inflater.inflate(R.layout.draw_fragment, container, false)
+        val mView = inflater.inflate(R.layout.review_fragment, container, false)
 
         // Sets view values
 
         cardFrontView = mView.findViewById(R.id.cardFront)
-        cardBackView = mView.findViewById(R.id.cardBack)
         cardText = mView.findViewById(R.id.cardInfo)
         cardColor = mView.findViewById(R.id.colorText)
         approveAnswers = mView.findViewById(R.id.submitButton)
@@ -64,7 +63,7 @@ class ReviewFragment(private val game: Game) : Fragment() {
 
         val mTaskAdapter = TaskAdapter(requireContext())
 
-        val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
+        val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.approveRecycler)
         mTaskRecyclerView.adapter = mTaskAdapter
         mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
 
