@@ -212,8 +212,10 @@ class GameActivity() : FragmentActivity() {
                                         player.addPoints(points)
 
                                         if (player.getPoints() == 5) {
+                                            Log.i(TAG, "INTO STATE FINISH")
                                             p.setState(Game.State.FINISH)
                                         } else {
+                                            Log.i(TAG, "INTO STATE ROUND")
                                             p.setState(Game.State.ROUND)
                                         }
 
@@ -226,7 +228,6 @@ class GameActivity() : FragmentActivity() {
                                         committed: Boolean,
                                         currentData: DataSnapshot?
                                     ) {
-                                        Log.i(TAG, "NEXT ROUND")
                                         mGame = currentData?.getValue(Game::class.java)!!
 
                                         drawGame()
@@ -260,8 +261,9 @@ class GameActivity() : FragmentActivity() {
                                     data.getValue(Game::class.java) ?: return Transaction.success(
                                         data
                                     )
-
-                                p.setState(Game.State.REVIEW)
+                                if (p.getState() == Game.State.TASK) {
+                                    p.setState(Game.State.REVIEW)
+                                }
 
                                 data.value = p
                                 return Transaction.success(data)
@@ -282,7 +284,7 @@ class GameActivity() : FragmentActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.i(TAG, "Could not fetch Actions")
+                    Log.i(TAG, "Could not fetch Answers")
                 }
             }
 
