@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.geekout.R
 import com.example.geekout.activities.GameActivity
-import com.example.geekout.adapters.TaskAdapter
+import com.example.geekout.adapters.ReviewAdapter
 import com.example.geekout.classes.Game
 
 class ReviewFragment(private val game: Game) : Fragment() {
@@ -61,13 +61,13 @@ class ReviewFragment(private val game: Game) : Fragment() {
             }
         }
 
-        val mTaskAdapter = TaskAdapter(requireContext())
+        val mReviewAdapter = ReviewAdapter(requireContext())
 
         val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.approveRecycler)
-        mTaskRecyclerView.adapter = mTaskAdapter
+        mTaskRecyclerView.adapter = mReviewAdapter
         mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        mTaskAdapter.set(ArrayList<String>(game.getBid()))
+        mReviewAdapter.set(game.getAnswers())
 
         approveAnswers.setOnClickListener {
             (activity as GameActivity).approveAnswers()

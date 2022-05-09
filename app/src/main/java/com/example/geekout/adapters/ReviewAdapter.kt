@@ -15,7 +15,7 @@ class ReviewAdapter(private val context: Context) :
 
     companion object {
         private const val TAG = "REVIEW ADAPTER"
-        private const val PLAYER_TYPE = R.layout.player_score
+        private const val REVIEW_ITEM = R.layout.review_item
     }
 
     private var mItems = ArrayList<String>()
@@ -53,7 +53,7 @@ class ReviewAdapter(private val context: Context) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewAdapter.ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(PLAYER_TYPE, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(REVIEW_ITEM, parent, false)
         val viewHolder = ViewHolder(v)
 
         viewHolder.reviewIndexTextView = v.findViewById(R.id.reviewNumber)
