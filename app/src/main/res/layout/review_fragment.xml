@@ -42,7 +42,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/approveRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         android:layout_below="@id/cardFront"
         android:layout_centerInParent="true"
         android:layout_marginStart="50dp"
@@ -52,7 +52,17 @@
         android:background="#92B8BAB7"
         android:paddingTop="40dp"
         tools:listitem="@layout/review_item"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/notifText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="40dp"
+        android:textAlignment="center"
+        android:text="@string/waiting"
+        android:textSize="30sp" />
 
     <RelativeLayout
         android:id="@+id/submitGroup"
