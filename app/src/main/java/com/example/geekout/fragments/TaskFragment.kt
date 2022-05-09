@@ -8,7 +8,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.geekout.R
+import com.example.geekout.adapters.ScoreboardAdapter
+import com.example.geekout.adapters.TaskAdapter
 import com.example.geekout.classes.Game
 
 class TaskFragment(private val game: Game) : Fragment() {
@@ -52,8 +56,15 @@ class TaskFragment(private val game: Game) : Fragment() {
             }
         }
 
-        // Add Scoreboard fragment
-        
+        // Convert Scoreboard fragment RecyclerView
+        val mTaskAdapter = TaskAdapter(requireContext())
+
+        val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
+        mTaskRecyclerView.adapter = mTaskAdapter
+        mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        mTaskAdapter.set(ArrayList<String>(game.getBid()))
+
         // Add submit button
 
         return mView

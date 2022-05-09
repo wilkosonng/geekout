@@ -25,7 +25,25 @@ class InstructionsActivity: Activity() {
                     this@InstructionsActivity,
                     R.string.instructions, Toast.LENGTH_LONG
                 ).show()
+                val textView2 = findViewById<TextView>(R.id.text_view_id2) as TextView
+                textView2?.setOnClickListener {
+                    Toast.makeText(
+                        this@InstructionsActivity,
+                        R.string.instructions, Toast.LENGTH_LONG
+                    ).show()
+                    val textView3 = findViewById<TextView>(R.id.text_view_id3) as TextView
+                    textView3?.setOnClickListener {
+                        Toast.makeText(
+                            this@InstructionsActivity,
+                            R.string.instructions, Toast.LENGTH_LONG
+                        ).show()
+                        val textView4 = findViewById<TextView>(R.id.text_view_id4) as TextView
+                        textView4?.setOnClickListener {
+                            Toast.makeText(
+                                this@InstructionsActivity,
+                                R.string.instructions, Toast.LENGTH_LONG
+                            ).show()
             }
         }
-    }
+    }}}}
 }
