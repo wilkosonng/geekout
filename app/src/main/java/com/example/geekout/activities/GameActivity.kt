@@ -22,7 +22,7 @@ import com.google.firebase.database.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class GameActivity(): FragmentActivity() {
+class GameActivity() : FragmentActivity() {
 
     companion object {
         private const val TAG = "GAME"
@@ -65,7 +65,7 @@ class GameActivity(): FragmentActivity() {
         mGamePager.adapter = mGameAdapter
 
         TabLayoutMediator(mTabLayout, mGamePager) { tab, position ->
-            tab.icon = if(position == 0) getDrawable(GAME_ICON) else getDrawable(LEADERBOARD_ICON)
+            tab.icon = if (position == 0) getDrawable(GAME_ICON) else getDrawable(LEADERBOARD_ICON)
         }.attach()
 
         // Initializes SharedPreferences and inputs Username, ID associated with client
@@ -86,15 +86,17 @@ class GameActivity(): FragmentActivity() {
 
         // Initializes card generator
 
-        mCardGenerator = CardGenerator(getTextFromRaw(R.raw.scificards), getTextFromRaw(R.raw.gamecards),
-                                        getTextFromRaw(R.raw.comiccards), getTextFromRaw(R.raw.fantasycards),
-                                        getTextFromRaw(R.raw.misccards))
+        mCardGenerator = CardGenerator(
+            getTextFromRaw(R.raw.scificards), getTextFromRaw(R.raw.gamecards),
+            getTextFromRaw(R.raw.comiccards), getTextFromRaw(R.raw.fantasycards),
+            getTextFromRaw(R.raw.misccards)
+        )
 
         // Adds the player to the lobby using a transaction to ensure read/write safety.
 
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 val avatars = p.getAvatars()
                 val avatar = avatars.shuffled()[0]
@@ -126,47 +128,47 @@ class GameActivity(): FragmentActivity() {
         // Todo: Implement Listeners
 
         mDatabase.child("players").addValueEventListener(
-            object: ValueEventListener {
+            object : ValueEventListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    // When the player list is updated (player joins or leaves), update local game.
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // When the player list is updated (player joins or leaves), update local game.
 
-                    val type = object: GenericTypeIndicator<ArrayList<Player>>() {}
-                    val players = snapshot.getValue(type) as ArrayList<Player>
+                        val type = object : GenericTypeIndicator<ArrayList<Player>>() {}
+                        val players = snapshot.getValue(type) as ArrayList<Player>
 
-                    mGame.setPlayers(players)
+                        mGame.setPlayers(players)
 
-                    // If a player leaves and re-indexes the players ArrayList, decrements the turn counter.
+                        // If a player leaves and re-indexes the players ArrayList, decrements the turn counter.
 
-                    if (isHost) {
-                        if (mGame.getTurn() != null && players[mTurnCounter % players.size] != mGame.getTurn()) {
-                            mTurnCounter--
+                        if (isHost) {
+                            if (mGame.getTurn() != null && players[mTurnCounter % players.size] != mGame.getTurn()) {
+                                mTurnCounter--
+                            }
                         }
-                    }
 
-                    mFrags = if (mFrags.size == 2) {
-                        arrayListOf(mFrags[0], ScoreboardFragment(mGame))
-                    } else {
-                        arrayListOf(LobbyFragment(mGame, mCode, isHost))
-                    }
+                        mFrags = if (mFrags.size == 2) {
+                            arrayListOf(mFrags[0], ScoreboardFragment(mGame))
+                        } else {
+                            arrayListOf(LobbyFragment(mGame, mCode, isHost))
+                        }
 
-                    mGameAdapter.setFrags(mFrags)
+                        mGameAdapter.setFrags(mFrags)
+                    }
                 }
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.i(TAG, "Could not fetch Players")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(TAG, "Could not fetch Players")
+                }
+            })
 
         if (isHost) {
-            val actionsListener = object: ValueEventListener {
+            val actionsListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Records player responses.
 
-                        val type = object: GenericTypeIndicator<ArrayList<Game.Action>>() {}
+                        val type = object : GenericTypeIndicator<ArrayList<Game.Action>>() {}
                         val actions = snapshot.getValue(type) as ArrayList<Game.Action>
 
                         mGame.setActions(actions)
@@ -186,7 +188,7 @@ class GameActivity(): FragmentActivity() {
                             var points = 0
 
                             for (action in actions) {
-                                if(action == Game.Action.REVIEW_ACCEPT) {
+                                if (action == Game.Action.REVIEW_ACCEPT) {
                                     approvals++
                                     total++
                                 } else if (action == Game.Action.REVIEW_VETO) {
@@ -202,13 +204,15 @@ class GameActivity(): FragmentActivity() {
                                     points = -1
                                 }
 
-                                mDatabase.runTransaction(object: Transaction.Handler {
+                                mDatabase.runTransaction(object : Transaction.Handler {
                                     override fun doTransaction(data: MutableData): Transaction.Result {
-                                        val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                                        val p = data.getValue(Game::class.java)
+                                            ?: return Transaction.success(data)
 
                                         // Adds player avatar back into list of available avatars.
 
-                                        val player = p.getPlayers()[p.getPlayers().indexOf(p.getActive())]
+                                        val player =
+                                            p.getPlayers()[p.getPlayers().indexOf(p.getActive())]
                                         player.addPoints(points)
 
                                         if (player.getPoints() == 5) {
@@ -241,19 +245,22 @@ class GameActivity(): FragmentActivity() {
 
             mDatabase.child("actions").addValueEventListener(actionsListener)
 
-            val answersListener = object: ValueEventListener {
+            val answersListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // Records player responses.
 
-                        val type = object: GenericTypeIndicator<ArrayList<String>>() {}
+                        val type = object : GenericTypeIndicator<ArrayList<String>>() {}
                         val answers = snapshot.getValue(type) as ArrayList<String>
 
                         mGame.setAnswers(answers)
 
-                        mDatabase.runTransaction(object: Transaction.Handler {
+                        mDatabase.runTransaction(object : Transaction.Handler {
                             override fun doTransaction(data: MutableData): Transaction.Result {
-                                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                                val p =
+                                    data.getValue(Game::class.java) ?: return Transaction.success(
+                                        data
+                                    )
 
                                 // Adds player avatar back into list of available avatars.
 
@@ -282,7 +289,7 @@ class GameActivity(): FragmentActivity() {
 
             mDatabase.child("answers").addValueEventListener(answersListener)
         } else {
-            val stateListener = object: ValueEventListener {
+            val stateListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // When the game state is updated, updates UI
@@ -302,9 +309,9 @@ class GameActivity(): FragmentActivity() {
 
             mDatabase.child("state").addValueEventListener(stateListener)
 
-            val cardListener = object: ValueEventListener {
+            val cardListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()) {
+                    if (snapshot.exists()) {
                         val card = snapshot.getValue(Card::class.java) as Card
 
                         mGame.setCard(card)
@@ -319,9 +326,9 @@ class GameActivity(): FragmentActivity() {
 
             mDatabase.child("card").addValueEventListener(cardListener)
 
-            val currPlayerListener = object: ValueEventListener {
+            val currPlayerListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot.exists()) {
+                    if (snapshot.exists()) {
                         Log.i(TAG, "Updating active")
                         val curr = snapshot.getValue(Player::class.java)
 
@@ -339,7 +346,7 @@ class GameActivity(): FragmentActivity() {
 
             mDatabase.child("active").addValueEventListener(currPlayerListener)
 
-            val currTurnListener = object: ValueEventListener {
+            val currTurnListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         Log.i(TAG, "Updating turn")
@@ -358,7 +365,7 @@ class GameActivity(): FragmentActivity() {
 
             mDatabase.child("turn").addValueEventListener(currTurnListener)
 
-            val bidListener = object: ValueEventListener {
+            val bidListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         Log.i(TAG, "Updating bid")
@@ -386,16 +393,16 @@ class GameActivity(): FragmentActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
-        if(isHost) {
+        if (isHost) {
             // Removes game from database if host leaves.
 
             mDatabase.removeValue()
         } else {
             // Removes player from database if player leaves after a short timeout.
 
-            mDatabase.runTransaction(object: Transaction.Handler {
+            mDatabase.runTransaction(object : Transaction.Handler {
                 override fun doTransaction(data: MutableData): Transaction.Result {
-                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                    val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                     // Adds player avatar back into list of available avatars.
 
@@ -424,9 +431,9 @@ class GameActivity(): FragmentActivity() {
     fun startGame() {
 //        if (mGame.getPlayers().size >= 2) {
         if (mGame.getPlayers().size >= 0) {
-            mDatabase.runTransaction(object: Transaction.Handler {
+            mDatabase.runTransaction(object : Transaction.Handler {
                 override fun doTransaction(data: MutableData): Transaction.Result {
-                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                    val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                     // Sets the game state to DRAW
 
@@ -456,9 +463,9 @@ class GameActivity(): FragmentActivity() {
     // Todo: Implement additional auxillary methods
 
     private fun setCard() {
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the game state to DRAW
 
@@ -482,10 +489,10 @@ class GameActivity(): FragmentActivity() {
     }
 
     fun onFlipEnd() {
-        if(isHost) {
-            mDatabase.runTransaction(object: Transaction.Handler {
+        if (isHost) {
+            mDatabase.runTransaction(object : Transaction.Handler {
                 override fun doTransaction(data: MutableData): Transaction.Result {
-                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                    val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                     // Sets the game state to DRAW
 
@@ -512,9 +519,9 @@ class GameActivity(): FragmentActivity() {
     }
 
     fun bidSubmit(bidAmount: Int) {
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the action to bid pass.
                 p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.BID)
@@ -537,9 +544,9 @@ class GameActivity(): FragmentActivity() {
     }
 
     fun bidPass() {
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the action to bid pass.
                 p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.BID_PASS)
@@ -560,9 +567,9 @@ class GameActivity(): FragmentActivity() {
     }
 
     fun approveAnswers() {
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the action to bid pass.
                 p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.REVIEW_ACCEPT)
@@ -583,9 +590,9 @@ class GameActivity(): FragmentActivity() {
     }
 
     fun rejectAnswers() {
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the action to bid pass.
                 p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.REVIEW_VETO)
@@ -607,19 +614,26 @@ class GameActivity(): FragmentActivity() {
 
     private fun setNewBidder() {
         Log.i(TAG, "SETTING NEW BIDDER")
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the new bidder
 
                 Log.i(TAG, p.getPlayers().size.toString())
                 Log.i(TAG, (p.getPlayers().indexOf(p.getActive())).toString())
                 Log.i(TAG, (p.getPlayers().indexOf(p.getActive()) + 1).toString())
-                Log.i(TAG, p.getPlayers()[(p.getPlayers().indexOf(p.getActive()) + 1) % p.getPlayers().size].toString())
+                Log.i(
+                    TAG,
+                    p.getPlayers()[(p.getPlayers()
+                        .indexOf(p.getActive()) + 1) % p.getPlayers().size].toString()
+                )
 
                 p.submitAction(p.getPlayers().indexOf(p.getActive()), Game.Action.NONE)
-                p.setActive(p.getPlayers()[(p.getPlayers().indexOf(p.getActive()) + 1) % p.getPlayers().size])
+                p.setActive(
+                    p.getPlayers()[(p.getPlayers()
+                        .indexOf(p.getActive()) + 1) % p.getPlayers().size]
+                )
 
                 data.value = p
                 return Transaction.success(data)
@@ -632,34 +646,33 @@ class GameActivity(): FragmentActivity() {
             ) {
                 mGame = currentData?.getValue(Game::class.java)!!
                 drawGame()
+                if (mGame.getActive() == mGame.getHighestBidder()) {
+                    mDatabase.runTransaction(object : Transaction.Handler {
+                        override fun doTransaction(data: MutableData): Transaction.Result {
+                            val p =
+                                data.getValue(Game::class.java) ?: return Transaction.success(data)
 
-                if (mGame.getActions()[(mGame.getPlayers().indexOf(mGame.getActive()) + mGame.getPlayers().size - 1) % mGame.getPlayers().size] == Game.Action.BID_PASS) {
-                    if (mGame.getActive() == mGame.getHighestBidder()) {
-                        mDatabase.runTransaction(object: Transaction.Handler {
-                            override fun doTransaction(data: MutableData): Transaction.Result {
-                                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                            // Transitions to TASK State
+                            // Todo: Complete delegateTask
+                            p.setState(Game.State.TASK)
+                            data.value = p
 
-                                // Transitions to TASK State
-                                // Todo: Complete delegateTask
-                                p.setState(Game.State.TASK)
-                                data.value = p
+                            return Transaction.success(data)
+                        }
 
-                                return Transaction.success(data)
-                            }
+                        override fun onComplete(
+                            databaseError: DatabaseError?,
+                            committed: Boolean,
+                            currentData: DataSnapshot?
+                        ) {
+                            mGame = currentData?.getValue(Game::class.java)!!
 
-                            override fun onComplete(
-                                databaseError: DatabaseError?,
-                                committed: Boolean,
-                                currentData: DataSnapshot?
-                            ) {
-                                mGame = currentData?.getValue(Game::class.java)!!
-
-                                drawGame()
-                            }
-                        })
-                    }
+                            drawGame()
+                        }
+                    })
                 }
             }
+
         })
     }
 
@@ -701,9 +714,9 @@ class GameActivity(): FragmentActivity() {
     }
 
     fun submitAnswers(answers: ArrayList<String>) {
-        mDatabase.runTransaction(object: Transaction.Handler {
+        mDatabase.runTransaction(object : Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
 
                 // Sets the action to bid pass.
                 p.setAnswers(answers)
@@ -723,7 +736,7 @@ class GameActivity(): FragmentActivity() {
         })
     }
 
-    private fun getTextFromRaw(myID : Int) : Array<String> {
+    private fun getTextFromRaw(myID: Int): Array<String> {
         var rawText = resources.openRawResource(myID).bufferedReader().use { it.readText() }
         return rawText.split("[\r\n]+".toRegex()).shuffled().toTypedArray()
     }
