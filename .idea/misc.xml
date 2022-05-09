@@ -32,7 +32,14 @@
         <entry key="..\:/Users/danie/Documents/CMSC436/geekout/app/src/main/res/layout/review_item.xml" value="0.1" />
         <entry key="..\:/Users/danie/Documents/CMSC436/geekout/app/src/main/res/layout/task_fragment.xml" value="0.1" />
         <entry key="..\:/Users/test/geekout/app/src/main/res/layout/draw_fragment.xml" value="0.1" />
+<<<<<<< HEAD
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/review_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/scoreboard_fragment.xml" value="0.10989583333333333" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/settings.xml" value="0.10989583333333333" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/task_fragment.xml" value="0.10989583333333333" />
+=======
         <entry key="..\:/Users/test/geekout/app/src/main/res/layout/review_fragment.xml" value="0.1" />
+>>>>>>> a938ae05eafbbcbe637c267ab859a09e924006db
       </map>
     </option>
   </component>
