@@ -189,7 +189,7 @@ class GameActivity(): FragmentActivity() {
                                 }
                             }
 
-                            if (total / mGame.getPlayers().size > 0.5) {
+                            if (mGame.getPlayers().size != 0 && total / mGame.getPlayers().size > 0.5) {
                                 if (approvals > vetos) {
                                     points = 1
                                 } else {
@@ -280,11 +280,12 @@ class GameActivity(): FragmentActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         // When the game state is updated, updates UI
-
-                        val state = snapshot.getValue(Game.State::class.java) as Game.State
-                        mGame.setState(state)
-
-                        drawGame()
+                        mDatabase.get().addOnSuccessListener {
+                            if (it.exists()) {
+                                mGame = it.getValue(Game::class.java)!!
+                                drawGame()
+                            }
+                        }
                     }
                 }
 
@@ -629,7 +630,6 @@ class GameActivity(): FragmentActivity() {
                             override fun doTransaction(data: MutableData): Transaction.Result {
                                 val p = data.getValue(Game::class.java)?: return Transaction.success(data)
 
-                                Log.i(TAG, "DELEGATING TASK")
                                 // Transitions to TASK State
                                 // Todo: Complete delegateTask
                                 p.setState(Game.State.TASK)

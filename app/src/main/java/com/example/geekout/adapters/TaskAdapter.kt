@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +19,8 @@ class TaskAdapter(private val context: Context):
     RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
 
     companion object {
-        private const val TAG = "SCOREBOARD ADAPTER"
-        private const val PLAYER_TYPE = R.layout.input_item
+        private const val TAG = "TASK ADAPTER"
+        private const val ITEM_TYPE = R.layout.input_item
     }
 
     private var mItems = ArrayList<String>()
@@ -53,7 +54,7 @@ class TaskAdapter(private val context: Context):
     }
 
     override fun getItemViewType(position: Int): Int {
-        return PLAYER_TYPE
+        return ITEM_TYPE
     }
 
     override fun getItemId(position: Int): Long {
@@ -65,7 +66,7 @@ class TaskAdapter(private val context: Context):
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(PLAYER_TYPE, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(ITEM_TYPE, parent, false)
         val viewHolder = ViewHolder(v)
 
         viewHolder.indexTextView = v.findViewById(R.id.numberTextView)
@@ -86,6 +87,7 @@ class TaskAdapter(private val context: Context):
             override fun beforeTextChanged(s : CharSequence, start : Int, count : Int, after : Int) {}
 
             override fun onTextChanged(s : CharSequence, start : Int, before : Int, count : Int) {
+                Log.i(TAG, "TEXT CHANGE")
                 mItems[holder.bindingAdapterPosition] = holder.responseEditText!!.text.toString()
             }
         })
