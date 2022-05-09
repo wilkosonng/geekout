@@ -298,7 +298,7 @@ class GameActivity() : FragmentActivity() {
                         mDatabase.get().addOnSuccessListener {
                             if (it.exists()) {
                                 mGame = it.getValue(Game::class.java)!!
-                                
+
                                 drawGame()
                             }
                         }
@@ -711,7 +711,7 @@ class GameActivity() : FragmentActivity() {
 
             Game.State.REVIEW -> {
                 Log.i(TAG, "CHANGING VIEW TO REVIEW")
-                mFrags = arrayListOf(ReviewFragment(mGame), ScoreboardFragment(mGame))
+                mFrags = arrayListOf(ReviewFragment(mGame, mPlayer), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
 
