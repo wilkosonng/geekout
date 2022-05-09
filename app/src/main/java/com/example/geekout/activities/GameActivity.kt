@@ -546,16 +546,34 @@ class GameActivity(): FragmentActivity() {
                 mGameAdapter.setFrags(mFrags)
             }
 
-            Game.State.ROUND -> {
-                mFrags = arrayListOf(RoundFragment(mGame), ScoreboardFragment(mGame))
-                mGameAdapter.setFrags(mFrags)
-            }
-
             Game.State.FINISH -> {
                 mFrags = arrayListOf(FinishFragment(mGame), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
         }
+    }
+
+    fun submitAnswers(answers: ArrayList<String>) {
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the action to bid pass.
+                p.setAnswers(answers)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                drawGame()
+            }
+        })
     }
 
     private fun getTextFromRaw(myID : Int) : Array<String> {
