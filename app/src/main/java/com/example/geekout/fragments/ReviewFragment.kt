@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.geekout.R
+import com.example.geekout.adapters.TaskAdapter
 import com.example.geekout.classes.Game
 
 class ReviewFragment(private val game: Game) : Fragment() {
@@ -26,8 +28,6 @@ class ReviewFragment(private val game: Game) : Fragment() {
     private lateinit var cardBackView: ImageView
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
-    private lateinit var acceptButton: Button
-    private lateinit var rejectButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +54,14 @@ class ReviewFragment(private val game: Game) : Fragment() {
                 Game.Roll.BLACK -> getString(BLACK)
             }
         }
+
+        val mTaskAdapter = TaskAdapter(requireContext())
+
+        val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
+        mTaskRecyclerView.adapter = mTaskAdapter
+        mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        mTaskAdapter.set(ArrayList<String>(game.getBid()))
 
 
         return mView

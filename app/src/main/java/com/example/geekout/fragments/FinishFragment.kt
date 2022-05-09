@@ -42,7 +42,7 @@ class FinishFragment(private val game: Game) : Fragment() {
         cardColor = mView.findViewById(R.id.colorText)
 
         if (game.getCard() != null) {
-            cardText.text = game.getCard()!!.cardInfo()
+            cardText.text = getString(R.string.gameover)
             cardColor.text = when (game.getCard()!!.getColor()) {
                 Game.Roll.RED -> getString(RED)
                 Game.Roll.BLUE -> getString(BLUE)
