@@ -120,7 +120,7 @@ class MenuActivity : FragmentActivity() {
                     // If no lobby is found, notifies the user.
 
                     Log.i(TAG, "Lobby not found")
-                    Toast.makeText(this, "Lobby not found/in progressz", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Lobby not found/in progresss", Toast.LENGTH_LONG).show()
                 }
             }.addOnFailureListener {
                 // If query fails, notifies the user.
