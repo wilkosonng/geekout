@@ -7,7 +7,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/responseRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="340dp"
         android:layout_centerInParent="true"
         android:layout_marginStart="50dp"
         android:layout_marginTop="10dp"
