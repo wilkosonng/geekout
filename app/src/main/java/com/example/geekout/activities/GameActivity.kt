@@ -197,12 +197,8 @@ class GameActivity() : FragmentActivity() {
                                 }
                             }
 
-                            if (mGame.getPlayers().size != 0 && total / mGame.getPlayers().size > 0.5) {
-                                if (approvals > vetos) {
-                                    points = 1
-                                } else {
-                                    points = -1
-                                }
+                            if (mGame.getPlayers().size != 0 && total / mGame.getPlayers().size > 0.8) {
+                                points = if (approvals > vetos) 1 else -1
 
                                 mDatabase.runTransaction(object : Transaction.Handler {
                                     override fun doTransaction(data: MutableData): Transaction.Result {
@@ -218,7 +214,7 @@ class GameActivity() : FragmentActivity() {
                                         if (player.getPoints() == 5) {
                                             p.setState(Game.State.FINISH)
                                         } else {
-                                            p.setState(Game.State.DRAW)
+                                            p.setState(Game.State.ROUND)
                                         }
 
                                         data.value = p
@@ -230,7 +226,10 @@ class GameActivity() : FragmentActivity() {
                                         committed: Boolean,
                                         currentData: DataSnapshot?
                                     ) {
-                                        Log.i(TAG, "Completed Deletion")
+                                        Log.i(TAG, "NEXT ROUND")
+                                        mGame = currentData?.getValue(Game::class.java)!!
+
+                                        drawGame()
                                     }
                                 })
                             }
@@ -261,8 +260,6 @@ class GameActivity() : FragmentActivity() {
                                     data.getValue(Game::class.java) ?: return Transaction.success(
                                         data
                                     )
-
-                                // Adds player avatar back into list of available avatars.
 
                                 p.setState(Game.State.REVIEW)
 
@@ -710,8 +707,12 @@ class GameActivity() : FragmentActivity() {
             }
 
             Game.State.REVIEW -> {
-                Log.i(TAG, "CHANGING VIEW TO REVIEW")
                 mFrags = arrayListOf(ReviewFragment(mGame, mPlayer), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
+            }
+
+            Game.State.ROUND -> {
+                mFrags = arrayListOf(RoundFragment(mGame), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
 

@@ -7,13 +7,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/responseRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
+        android:layout_height="300dp"
         android:layout_centerInParent="true"
         android:layout_marginStart="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="70dp"
         android:layout_below="@id/cardFront"
+        android:layout_above="@id/submitAnswers"
         android:background="#92B8BAB7"
         android:clipToPadding="true"
         android:scrollbars="vertical"
@@ -57,15 +58,24 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/notifText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="40dp"
+        android:textAlignment="center"
+        android:text="@string/waiting"
+        android:textSize="30sp" />
+
     <Button
         android:id="@+id/submitAnswers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_below="@id/responseRecyclerView"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
-        android:layout_alignParentBottom="true"
-        />
+        android:backgroundTint="@color/green"
+        android:text="Submit" />
 
 </RelativeLayout>
