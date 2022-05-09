@@ -43,7 +43,6 @@ class GameActivity(): FragmentActivity() {
     private var isHost: Boolean = false
     private var mFrags: ArrayList<Fragment> = ArrayList()
     private var mTurnCounter: Int = 0
-    private var mActiveCounter: Int = 0
     private lateinit var mCardGenerator: CardGenerator
 
     private lateinit var mGameAdapter: GameAdapter
@@ -144,10 +143,6 @@ class GameActivity(): FragmentActivity() {
                         if (mGame.getTurn() != null && players[mTurnCounter % players.size] != mGame.getTurn()) {
                             mTurnCounter--
                         }
-
-                        if (mGame.getActive() != null && players[mActiveCounter % players.size] != mGame.getActive()) {
-                            mActiveCounter--
-                        }
                     }
 
                     mFrags = if (mFrags.size == 2) {
@@ -175,11 +170,15 @@ class GameActivity(): FragmentActivity() {
                         val actions = snapshot.getValue(type) as ArrayList<Game.Action>
 
                         mGame.setActions(actions)
+
+                        if (mGame.getState() == Game.State.BID) {
+                            setNewBidder()
+                        }
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Log.i(TAG, "Could not fetch Actions")
                 }
             }
 
@@ -198,7 +197,7 @@ class GameActivity(): FragmentActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Log.i(TAG, "Could not fetch State")
                 }
             }
 
@@ -215,7 +214,7 @@ class GameActivity(): FragmentActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Log.i(TAG, "Could not fetch Card")
                 }
             }
 
@@ -223,33 +222,63 @@ class GameActivity(): FragmentActivity() {
 
             val currPlayerListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if(snapshot.exists()) {
+                        Log.i(TAG, "Updating active")
+                        val curr = snapshot.getValue(Player::class.java)
 
+                        if (curr != null) {
+                            mGame.setActive(curr)
+                        }
+                        drawGame()
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Log.i(TAG, "Could not fetch Active")
                 }
             }
+
+            mDatabase.child("active").addValueEventListener(currPlayerListener)
 
             val currTurnListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        Log.i(TAG, "Updating turn")
+                        val curr = snapshot.getValue(Player::class.java)
 
+                        if (curr != null) {
+                            mGame.setTurn(curr)
+                        }
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
 
                 }
             }
+
+            mDatabase.child("turn").addValueEventListener(currTurnListener)
 
             val bidListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        Log.i(TAG, "Updating bid")
+                        val bid = snapshot.getValue(Int::class.java) as Int
 
+                        if (bid != null) {
+                            mGame.setBid(bid)
+                        }
+
+                        drawGame()
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
 
                 }
             }
+
+            mDatabase.child("bid").addValueEventListener(bidListener)
         }
     }
 
@@ -327,34 +356,6 @@ class GameActivity(): FragmentActivity() {
 
     // Todo: Implement additional auxillary methods
 
-    private fun setState(state: Game.State, drawAfterwards: Boolean) {
-        mDatabase.runTransaction(object: Transaction.Handler {
-            override fun doTransaction(data: MutableData): Transaction.Result {
-                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
-
-                // Sets the game state to State
-
-                p.setState(state)
-
-                data.value = p
-                return Transaction.success(data)
-            }
-
-            override fun onComplete(
-                databaseError: DatabaseError?,
-                committed: Boolean,
-                currentData: DataSnapshot?
-            ) {
-                mGame = currentData?.getValue(Game::class.java)!!
-                Log.i(TAG, "Set to ${mGame.getState()}")
-
-                if (drawAfterwards) {
-                    drawGame()
-                }
-            }
-        })
-    }
-
     private fun setCard() {
         mDatabase.runTransaction(object: Transaction.Handler {
             override fun doTransaction(data: MutableData): Transaction.Result {
@@ -383,8 +384,136 @@ class GameActivity(): FragmentActivity() {
 
     fun onFlipEnd() {
         if(isHost) {
-            setState(Game.State.BID, true)
+            mDatabase.runTransaction(object: Transaction.Handler {
+                override fun doTransaction(data: MutableData): Transaction.Result {
+                    val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                    // Sets the game state to DRAW
+
+                    p.setState(Game.State.BID)
+                    p.setHighestBidder(p.getPlayers()[mTurnCounter % p.getPlayers().size])
+                    p.setActive(p.getPlayers()[mTurnCounter % p.getPlayers().size])
+                    p.getCard()?.getBid()?.let { p.setBid(it) }
+
+                    data.value = p
+                    return Transaction.success(data)
+                }
+
+                override fun onComplete(
+                    databaseError: DatabaseError?,
+                    committed: Boolean,
+                    currentData: DataSnapshot?
+                ) {
+                    mGame = currentData?.getValue(Game::class.java)!!
+
+                    drawGame()
+                }
+            })
         }
+    }
+
+    fun bidSubmit(bidAmount: Int) {
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the action to bid pass.
+                p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.BID)
+                p.setBid(bidAmount)
+                p.setHighestBidder(mPlayer)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                drawGame()
+            }
+        })
+    }
+
+    fun bidPass() {
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the action to bid pass.
+                p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.BID_PASS)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                drawGame()
+            }
+        })
+    }
+
+    private fun setNewBidder() {
+        Log.i(TAG, "SETTING NEW BIDDER")
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the new bidder
+
+                Log.i(TAG, p.getPlayers().size.toString())
+                Log.i(TAG, p.getPlayers().toString())
+                Log.i(TAG, p.getActive().toString())
+                p.setActive(p.getPlayers()[(p.getPlayers().indexOf(p.getActive()) + 1) % p.getPlayers().size])
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                drawGame()
+
+                if (mGame.getActions()[(mGame.getPlayers().indexOf(mGame.getActive()) + mGame.getPlayers().size - 1) % mGame.getPlayers().size] == Game.Action.BID_PASS) {
+                    if (mGame.getActive() == mGame.getHighestBidder()) {
+                        mDatabase.runTransaction(object: Transaction.Handler {
+                            override fun doTransaction(data: MutableData): Transaction.Result {
+                                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                                Log.i(TAG, "DELEGATING TASK")
+                                // Transitions to TASK State
+                                // Todo: Complete delegateTask
+                                p.setState(Game.State.TASK)
+                                data.value = p
+
+                                return Transaction.success(data)
+                            }
+
+                            override fun onComplete(
+                                databaseError: DatabaseError?,
+                                committed: Boolean,
+                                currentData: DataSnapshot?
+                            ) {
+                                mGame = currentData?.getValue(Game::class.java)!!
+
+                                drawGame()
+                            }
+                        })
+                    }
+                }
+            }
+        })
     }
 
     // Draws the game UI depending on the game state.
@@ -408,23 +537,23 @@ class GameActivity(): FragmentActivity() {
             }
 
             Game.State.TASK -> {
-
+                mFrags = arrayListOf(TaskFragment(mGame), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.REVIEW -> {
-
+                mFrags = arrayListOf(ReviewFragment(mGame), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.ROUND -> {
-
+                mFrags = arrayListOf(RoundFragment(mGame), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
             }
 
             Game.State.FINISH -> {
-
-            }
-
-            Game.State.HOST_DC -> {
-
+                mFrags = arrayListOf(FinishFragment(mGame), ScoreboardFragment(mGame))
+                mGameAdapter.setFrags(mFrags)
             }
         }
     }
