@@ -4,6 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/responseRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="70dp"
+        android:layout_below="@id/cardFront"
+        android:background="#92B8BAB7"
+        android:clipToPadding="true"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/input_item"
+        tools:visibility="visible" />
+
     <RelativeLayout
         android:id="@+id/cardFront"
         android:layout_width="wrap_content"
@@ -41,27 +57,15 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
     <Button
-        android:id="@+id/button"
+        android:id="@+id/submitAnswers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="Submit"
+        android:layout_below="@id/responseRecyclerView"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
 </RelativeLayout>
