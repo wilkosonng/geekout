@@ -72,21 +72,19 @@
         android:id="@+id/currentText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Turn"
-        android:textSize="25sp"
         android:layout_below="@id/cardFront"
         android:layout_centerHorizontal="true"
-        />
+        android:text="Current Turn"
+        android:textSize="25sp" />
 
     <TextView
         android:id="@+id/topBidText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Current Top Bid"
-        android:textSize="25sp"
         android:layout_below="@id/playerTag"
         android:layout_centerHorizontal="true"
-        />
+        android:text="Current Top Bid"
+        android:textSize="25sp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

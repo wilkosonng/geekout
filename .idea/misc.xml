@@ -23,7 +23,8 @@
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/menu.xml" value="0.15715579710144928" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/player.xml" value="0.33" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/player_score.xml" value="0.33" />
-        <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/scoreboard_fragment.xml" value="0.5" />
+        <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/review_fragment.xml" value="0.175" />
+        <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/scoreboard_fragment.xml" value="0.40481927710843374" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/settings.xml" value="0.360054347826087" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/layout/task_fragment.xml" value="0.33" />
         <entry key="..\:/Projects/GeekOut/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.294" />
