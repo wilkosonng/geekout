@@ -375,7 +375,12 @@ class GameActivity() : FragmentActivity() {
                             mGame.setBid(bid)
                         }
 
-                        drawGame()
+                        mDatabase.child("highestBidder").get().addOnSuccessListener {
+                            if (it.exists()) {
+                                mGame.setHighestBidder(it.getValue(Player::class.java)!!)
+                                drawGame()
+                            }
+                        }
                     }
                 }
 
@@ -702,6 +707,7 @@ class GameActivity() : FragmentActivity() {
             }
 
             Game.State.REVIEW -> {
+                Log.i(TAG, "CHANGING VIEW TO REVIEW")
                 mFrags = arrayListOf(ReviewFragment(mGame), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
