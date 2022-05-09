@@ -76,6 +76,7 @@
         android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
         android:backgroundTint="@color/green"
+        android:textColor="@color/white"
         android:text="Submit" />
 
 </RelativeLayout>

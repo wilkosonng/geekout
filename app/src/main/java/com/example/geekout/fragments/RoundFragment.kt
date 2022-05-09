@@ -81,23 +81,8 @@ class RoundFragment(private val game: Game) : Fragment() {
             }
         }
 
-        notifView.text = if (vetoTally > approveTally) "${game.getActive()?.getName()} passed the challenge and earned themselves a point!" else
+        notifView.text = if (vetoTally < approveTally) "${game.getActive()?.getName()} passed the challenge and earned themselves a point!" else
             "${game.getActive()?.getName()} failed the challenge and lost themselves a point!"
-
-        mFrontAnimator = AnimatorInflater.loadAnimator(requireContext(), R.animator.card_to_front) as AnimatorSet
-        mBackAnimator = AnimatorInflater.loadAnimator(requireContext(), R.animator.card_to_back) as AnimatorSet
-
-        Handler(Looper.getMainLooper()).post {
-            mFrontAnimator.setTarget(cardBackView)
-            mBackAnimator.setTarget(cardFrontView)
-
-            mFrontAnimator.start()
-            mBackAnimator.start()
-        }
-
-        mFrontAnimator.doOnEnd {
-            (activity as GameActivity).resetRound()
-        }
 
         return mView
     }
