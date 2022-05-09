@@ -173,6 +173,57 @@ class GameActivity(): FragmentActivity() {
 
                         if (mGame.getState() == Game.State.BID) {
                             setNewBidder()
+                        } else {
+                            var approvals = 0
+                            var vetos = 0
+                            var total = 0
+                            var points = 0
+
+                            for (action in actions) {
+                                if(action == Game.Action.REVIEW_ACCEPT) {
+                                    approvals++
+                                    total++
+                                } else if (action == Game.Action.REVIEW_VETO) {
+                                    vetos++
+                                    total++
+                                }
+                            }
+
+                            if (total / mGame.getPlayers().size > 0.5) {
+                                if (approvals > vetos) {
+                                    points = 1
+                                } else {
+                                    points = -1
+                                }
+
+                                mDatabase.runTransaction(object: Transaction.Handler {
+                                    override fun doTransaction(data: MutableData): Transaction.Result {
+                                        val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                                        // Adds player avatar back into list of available avatars.
+
+                                        val player = p.getPlayers()[p.getPlayers().indexOf(p.getActive())]
+                                        player.addPoints(points)
+
+                                        if (player.getPoints() == 5) {
+                                            p.setState(Game.State.FINISH)
+                                        } else {
+                                            p.setState(Game.State.DRAW)
+                                        }
+
+                                        data.value = p
+                                        return Transaction.success(data)
+                                    }
+
+                                    override fun onComplete(
+                                        databaseError: DatabaseError?,
+                                        committed: Boolean,
+                                        currentData: DataSnapshot?
+                                    ) {
+                                        Log.i(TAG, "Completed Deletion")
+                                    }
+                                })
+                            }
                         }
                     }
                 }
@@ -183,6 +234,47 @@ class GameActivity(): FragmentActivity() {
             }
 
             mDatabase.child("actions").addValueEventListener(actionsListener)
+
+            val answersListener = object: ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Records player responses.
+
+                        val type = object: GenericTypeIndicator<ArrayList<String>>() {}
+                        val answers = snapshot.getValue(type) as ArrayList<String>
+
+                        mGame.setAnswers(answers)
+
+                        mDatabase.runTransaction(object: Transaction.Handler {
+                            override fun doTransaction(data: MutableData): Transaction.Result {
+                                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                                // Adds player avatar back into list of available avatars.
+
+                                p.setState(Game.State.REVIEW)
+
+                                data.value = p
+                                return Transaction.success(data)
+                            }
+
+                            override fun onComplete(
+                                databaseError: DatabaseError?,
+                                committed: Boolean,
+                                currentData: DataSnapshot?
+                            ) {
+                                Log.i(TAG, "Next Stage")
+                                mGame = currentData?.getValue(Game::class.java)!!
+                            }
+                        })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.i(TAG, "Could not fetch Actions")
+                }
+            }
+
+            mDatabase.child("answers").addValueEventListener(answersListener)
         } else {
             val stateListener = object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -460,6 +552,52 @@ class GameActivity(): FragmentActivity() {
         })
     }
 
+    fun approveAnswers() {
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the action to bid pass.
+                p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.REVIEW_ACCEPT)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                drawGame()
+            }
+        })
+    }
+
+    fun rejectAnswers() {
+        mDatabase.runTransaction(object: Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java)?: return Transaction.success(data)
+
+                // Sets the action to bid pass.
+                p.submitAction(p.getPlayers().indexOf(mPlayer), Game.Action.REVIEW_VETO)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                drawGame()
+            }
+        })
+    }
+
     private fun setNewBidder() {
         Log.i(TAG, "SETTING NEW BIDDER")
         mDatabase.runTransaction(object: Transaction.Handler {
@@ -537,7 +675,7 @@ class GameActivity(): FragmentActivity() {
             }
 
             Game.State.TASK -> {
-                mFrags = arrayListOf(TaskFragment(mGame), ScoreboardFragment(mGame))
+                mFrags = arrayListOf(TaskFragment(mGame, mPlayer), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
 
