@@ -40,12 +40,11 @@ class TaskFragment(private val game: Game, private val mPlayer: Player) : Fragme
     ): View {
         // Inflate the layout for this fragment
 
-        val mView = inflater.inflate(R.layout.draw_fragment, container, false)
+        val mView = inflater.inflate(R.layout.task_fragment, container, false)
 
         // Sets view values
 
         cardFrontView = mView.findViewById(R.id.cardFront)
-        cardBackView = mView.findViewById(R.id.cardBack)
         cardText = mView.findViewById(R.id.cardInfo)
         cardColor = mView.findViewById(R.id.colorText)
         submitAnswers = mView.findViewById(R.id.submitAnswers)
@@ -65,7 +64,7 @@ class TaskFragment(private val game: Game, private val mPlayer: Player) : Fragme
 
         val mTaskAdapter = TaskAdapter(requireContext())
 
-        val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
+        val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.responseRecyclerView)
         mTaskRecyclerView.adapter = mTaskAdapter
         mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
 

@@ -37,7 +37,6 @@ class FinishFragment(private val game: Game) : Fragment() {
         // Sets view values
 
         cardFrontView = mView.findViewById(R.id.cardFront)
-        cardBackView = mView.findViewById(R.id.cardBack)
         cardText = mView.findViewById(R.id.cardInfo)
         cardColor = mView.findViewById(R.id.colorText)
 
