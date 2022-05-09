@@ -172,7 +172,13 @@ class GameActivity(): FragmentActivity() {
                         mGame.setActions(actions)
 
                         if (mGame.getState() == Game.State.BID) {
-                            setNewBidder()
+                            val action = actions[mGame.getPlayers().indexOf(mGame.getActive())]
+
+                            if (action == Game.Action.BID || action == Game.Action.BID_PASS) {
+                                setNewBidder()
+                            } else {
+                                return
+                            }
                         } else {
                             var approvals = 0
                             var vetos = 0
@@ -608,8 +614,11 @@ class GameActivity(): FragmentActivity() {
                 // Sets the new bidder
 
                 Log.i(TAG, p.getPlayers().size.toString())
-                Log.i(TAG, p.getPlayers().toString())
-                Log.i(TAG, p.getActive().toString())
+                Log.i(TAG, (p.getPlayers().indexOf(p.getActive())).toString())
+                Log.i(TAG, (p.getPlayers().indexOf(p.getActive()) + 1).toString())
+                Log.i(TAG, p.getPlayers()[(p.getPlayers().indexOf(p.getActive()) + 1) % p.getPlayers().size].toString())
+
+                p.submitAction(p.getPlayers().indexOf(p.getActive()), Game.Action.NONE)
                 p.setActive(p.getPlayers()[(p.getPlayers().indexOf(p.getActive()) + 1) % p.getPlayers().size])
 
                 data.value = p
