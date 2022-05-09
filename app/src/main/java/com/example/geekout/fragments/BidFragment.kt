@@ -10,7 +10,6 @@ import com.example.geekout.R
 import com.example.geekout.activities.GameActivity
 import com.example.geekout.classes.Game
 import com.example.geekout.classes.Player
-import org.w3c.dom.Text
 
 class BidFragment(private val game: Game, private val mPlayer: Player) : Fragment() {
 
@@ -61,9 +60,9 @@ class BidFragment(private val game: Game, private val mPlayer: Player) : Fragmen
         passButton = mView.findViewById(R.id.passButton)
         submitButton = mView.findViewById(R.id.submitButton)
 
-        // Sets bid to minbid
+        // Sets bid to minbid + 1
 
-        bid = game.getBid()
+        bid = game.getBid() + 1
 
         if (game.getCard() != null) {
             cardText.text = game.getCard()!!.cardInfo()
@@ -88,6 +87,7 @@ class BidFragment(private val game: Game, private val mPlayer: Player) : Fragmen
             bidText.visibility = View.VISIBLE
             submitButton.visibility = View.VISIBLE
             passButton.visibility = View.VISIBLE
+            "Your Bid: $bid".also { bidText.text = it }
         }
 
         if (game.getHighestBidder() != null) {
@@ -106,16 +106,22 @@ class BidFragment(private val game: Game, private val mPlayer: Player) : Fragmen
         }
 
         minusButton.setOnClickListener {
-            if (bid > )
+            if (bid > game.getBid() + 1) {
+                bid--
+                "Your Bid: $bid".also { bidText.text = it }
+            } else {
+                Toast.makeText(context, "Can't decrement further", Toast.LENGTH_SHORT).show()
+            }
         }
 
         plusButton.setOnClickListener {
-
+            bid++
+            "Your Bid: $bid".also { bidText.text = it }
         }
 
         submitButton.setOnClickListener {
             if (bid > game.getBid()) {
-                (activity as GameActivity).bidSubmit()
+                (activity as GameActivity).bidSubmit(bid)
             }
         }
 
