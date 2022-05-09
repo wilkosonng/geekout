@@ -748,6 +748,34 @@ class GameActivity() : FragmentActivity() {
         })
     }
 
+    fun resetRound() {
+        mDatabase.runTransaction(object : Transaction.Handler {
+            override fun doTransaction(data: MutableData): Transaction.Result {
+                val p = data.getValue(Game::class.java) ?: return Transaction.success(data)
+                mTurnCounter++
+
+                val newActions = ArrayList<Game.Action>()
+                for (i in 1..p.getPlayers().size) {
+                    newActions.add(Game.Action.NONE)
+                }
+
+                p.setActions(newActions)
+
+                data.value = p
+                return Transaction.success(data)
+            }
+
+            override fun onComplete(
+                databaseError: DatabaseError?,
+                committed: Boolean,
+                currentData: DataSnapshot?
+            ) {
+                mGame = currentData?.getValue(Game::class.java)!!
+                startGame()
+            }
+        })
+    }
+
     private fun getTextFromRaw(myID: Int): Array<String> {
         var rawText = resources.openRawResource(myID).bufferedReader().use { it.readText() }
         return rawText.split("[\r\n]+".toRegex()).shuffled().toTypedArray()

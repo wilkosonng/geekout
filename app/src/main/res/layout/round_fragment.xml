@@ -1,33 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/responseRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="70dp"
-        android:layout_below="@id/cardFront"
-        android:layout_above="@id/submitAnswers"
-        android:background="#92B8BAB7"
-        android:clipToPadding="true"
-        android:scrollbars="vertical"
-        tools:listitem="@layout/input_item"
-        tools:visibility="visible" />
 
     <RelativeLayout
         android:id="@+id/cardFront"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
         android:layout_centerHorizontal="true">
-
 
         <ImageView
             android:id="@+id/frontImage"
@@ -50,12 +30,11 @@
             android:id="@+id/cardInfo"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_toRightOf="@id/colorText"
+            android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/colorText"
             android:text="Name 3 Video Games with Monkeys"
-            android:layout_centerVertical="true"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
     </RelativeLayout>
 
     <TextView
@@ -64,18 +43,19 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:padding="40dp"
-        android:text="@string/waiting"
+        android:text="The Players have decided! Player gains a point!"
         android:textAlignment="center"
         android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/submitAnswers"
+
+    <ImageView
+        android:id="@+id/cardBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/green"
-        android:text="Submit" />
+        android:layout_centerHorizontal="true"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:src="@drawable/card_back"
+        android:visibility="invisible" />
 
 </RelativeLayout>
