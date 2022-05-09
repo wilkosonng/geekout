@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:textAlignment="textEnd">
 
     <RelativeLayout
@@ -39,7 +40,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+        android:id="@+id/approveRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/cardFront"
@@ -48,6 +49,38 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="50dp"
-        android:background="#92B8BAB7" />
+        android:background="#92B8BAB7"
+        android:paddingTop="40dp"
+        tools:listitem="@layout/review_item"
+        tools:visibility="visible"/>
 
+    <RelativeLayout
+        android:id="@+id/submitGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp">
+
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_toRightOf="@id/passButton"
+            android:backgroundTint="@color/green"
+            android:text="Accept"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/passButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="@color/red"
+            android:text="Reject"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
 </RelativeLayout>
