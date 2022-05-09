@@ -141,14 +141,6 @@ class GameActivity() : FragmentActivity() {
 
                         mGame.setPlayers(players)
 
-                        // If a player leaves and re-indexes the players ArrayList, decrements the turn counter.
-
-                        if (isHost) {
-                            if (mGame.getTurn() != null && players[mTurnCounter % players.size] != mGame.getTurn()) {
-                                mTurnCounter--
-                            }
-                        }
-
                         mFrags = if (mFrags.size == 2) {
                             arrayListOf(mFrags[0], ScoreboardFragment(mGame))
                         } else {
