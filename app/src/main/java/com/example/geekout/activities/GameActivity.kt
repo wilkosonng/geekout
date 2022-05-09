@@ -277,6 +277,8 @@ class GameActivity() : FragmentActivity() {
                             ) {
                                 Log.i(TAG, "Next Stage")
                                 mGame = currentData?.getValue(Game::class.java)!!
+
+                                drawGame()
                             }
                         })
                     }
@@ -296,6 +298,7 @@ class GameActivity() : FragmentActivity() {
                         mDatabase.get().addOnSuccessListener {
                             if (it.exists()) {
                                 mGame = it.getValue(Game::class.java)!!
+                                
                                 drawGame()
                             }
                         }
