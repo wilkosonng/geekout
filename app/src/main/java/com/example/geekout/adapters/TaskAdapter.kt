@@ -87,8 +87,8 @@ class TaskAdapter(private val context: Context):
             override fun beforeTextChanged(s : CharSequence, start : Int, count : Int, after : Int) {}
 
             override fun onTextChanged(s : CharSequence, start : Int, before : Int, count : Int) {
-                Log.i(TAG, "TEXT CHANGE")
                 mItems[holder.bindingAdapterPosition] = holder.responseEditText!!.text.toString()
+                Log.i(TAG, mItems[holder.bindingAdapterPosition])
             }
         })
     }
