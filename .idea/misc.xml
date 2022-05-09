@@ -28,6 +28,9 @@
         <entry key="..\:/Projects/GeekOut/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.294" />
         <entry key="..\:/Users/test/geekout/app/src/main/res/layout/draw_fragment.xml" value="0.1" />
         <entry key="..\:/Users/test/geekout/app/src/main/res/layout/review_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/scoreboard_fragment.xml" value="0.10989583333333333" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/settings.xml" value="0.10989583333333333" />
+        <entry key="..\:/Users/test/geekout/app/src/main/res/layout/task_fragment.xml" value="0.10989583333333333" />
       </map>
     </option>
   </component>
