@@ -60,10 +60,10 @@ class TaskFragment(private val game: Game) : Fragment() {
         val mTaskAdapter = TaskAdapter(requireContext())
 
         val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
-//        mTaskRecyclerView.adapter = mTaskAdapter
-//        mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
-//
-//        mTaskAdapter.set(game.getPlayers())
+        mTaskRecyclerView.adapter = mTaskAdapter
+        mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        mTaskAdapter.set(ArrayList<String>(game.getBid()))
 
         // Add submit button
 
