@@ -5,17 +5,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.geekout.R
+import com.example.geekout.activities.GameActivity
 import com.example.geekout.adapters.ScoreboardAdapter
 import com.example.geekout.adapters.TaskAdapter
 import com.example.geekout.classes.Game
+import com.example.geekout.classes.Player
 
-class TaskFragment(private val game: Game) : Fragment() {
+class TaskFragment(private val game: Game, private val mPlayer: Player) : Fragment() {
 
     companion object {
         private const val RED = R.string.redCircle
@@ -29,6 +32,7 @@ class TaskFragment(private val game: Game) : Fragment() {
     private lateinit var cardBackView: ImageView
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
+    private lateinit var submitAnswers: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +48,7 @@ class TaskFragment(private val game: Game) : Fragment() {
         cardBackView = mView.findViewById(R.id.cardBack)
         cardText = mView.findViewById(R.id.cardInfo)
         cardColor = mView.findViewById(R.id.colorText)
+        submitAnswers = mView.findViewById(R.id.submitAnswers)
 
         if (game.getCard() != null) {
             cardText.text = game.getCard()!!.cardInfo()
@@ -57,11 +62,17 @@ class TaskFragment(private val game: Game) : Fragment() {
         }
 
         // Convert Scoreboard fragment RecyclerView
+
         val mTaskAdapter = TaskAdapter(requireContext())
 
         val mTaskRecyclerView = mView.findViewById<RecyclerView>(R.id.scoreboardRecycler)
         mTaskRecyclerView.adapter = mTaskAdapter
         mTaskRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        if (game.getActive() != mPlayer) {
+            mTaskRecyclerView.visibility = View.GONE
+            submitAnswers.visibility = View.GONE
+        }
 
         val mList = ArrayList<String>()
 
@@ -73,6 +84,9 @@ class TaskFragment(private val game: Game) : Fragment() {
 
         // Add submit button
 
+        submitAnswers.setOnClickListener {
+            (activity as GameActivity).submitAnswers(mTaskAdapter.get())
+        }
         return mView
     }
 }
