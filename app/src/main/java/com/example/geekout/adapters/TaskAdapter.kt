@@ -3,6 +3,8 @@ package com.example.geekout.adapters
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,5 +75,15 @@ class TaskAdapter(private val context: Context):
 
         holder.indexTextView?.text = (position + 1).toString() + "."
         holder.responseEditText?.setText(spot)
+
+        holder.responseEditText?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s : Editable) {
+                mItems[holder.bindingAdapterPosition] = s.toString()
+            }
+
+            override fun beforeTextChanged(s : CharSequence, start : Int, count : Int, after : Int) {}
+
+            override fun onTextChanged(s : CharSequence, start : Int, before : Int, count : Int) {}
+        })
     }
 }
