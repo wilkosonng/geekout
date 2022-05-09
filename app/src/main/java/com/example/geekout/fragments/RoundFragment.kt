@@ -81,8 +81,8 @@ class RoundFragment(private val game: Game) : Fragment() {
             }
         }
 
-        notifView.text = if (vetoTally < approveTally) "${game.getActive()?.getName()} passed the challenge and earned themselves two points!" else
-            "${game.getActive()?.getName()} failed the challenge and lost themselves two points!"
+        notifView.text = if (vetoTally < approveTally) "${game.getActive()?.getName()} passed the challenge and earned themselves some points!" else
+            "${game.getActive()?.getName()} failed the challenge and lost themselves some points!"
 
         return mView
     }
