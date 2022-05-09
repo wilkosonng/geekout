@@ -403,7 +403,7 @@ class GameActivity(): FragmentActivity() {
             }
 
             Game.State.BID -> {
-                mFrags = arrayListOf(BidFragment(mGame), ScoreboardFragment(mGame))
+                mFrags = arrayListOf(BidFragment(mGame, mPlayer), ScoreboardFragment(mGame))
                 mGameAdapter.setFrags(mFrags)
             }
 
