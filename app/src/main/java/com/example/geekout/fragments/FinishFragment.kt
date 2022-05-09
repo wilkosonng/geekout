@@ -21,10 +21,7 @@ class FinishFragment(private val game: Game) : Fragment() {
         private const val BLACK = R.string.blackCircle
     }
 
-    private lateinit var cardFrontView: RelativeLayout
-    private lateinit var cardBackView: ImageView
-    private lateinit var cardText: TextView
-    private lateinit var cardColor: TextView
+    private lateinit var finishText: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,24 +29,12 @@ class FinishFragment(private val game: Game) : Fragment() {
     ): View {
         // Inflate the layout for this fragment
 
-        val mView = inflater.inflate(R.layout.draw_fragment, container, false)
+        val mView = inflater.inflate(R.layout.finish_fragment, container, false)
 
         // Sets view values
 
-        cardFrontView = mView.findViewById(R.id.cardFront)
-        cardText = mView.findViewById(R.id.cardInfo)
-        cardColor = mView.findViewById(R.id.colorText)
-
-        if (game.getCard() != null) {
-            cardText.text = getString(R.string.gameover)
-            cardColor.text = when (game.getCard()!!.getColor()) {
-                Game.Roll.RED -> getString(RED)
-                Game.Roll.BLUE -> getString(BLUE)
-                Game.Roll.GREEN -> getString(GREEN)
-                Game.Roll.YELLOW -> getString(YELLOW)
-                Game.Roll.BLACK -> getString(BLACK)
-            }
-        }
+        finishText = mView.findViewById(R.id.finishText)
+        finishText.text = "🏆 Congratulations to ${game.getActive()?.getName()} on earning your fifth and final point to win the game! 🏆"
 
         return mView
     }
