@@ -29,35 +29,35 @@ class CardGenerator (var sciFiCards : Array<String>, var gameCards : Array<Strin
     private fun generateYellow() : Card {
         // Sci-Fi
         var txt: String? = sciFiCards.firstOrNull() ?: return generateRed()
-        sciFiCards.drop(1)
+        sciFiCards = sciFiCards.drop(1).toTypedArray()
         return Card(generateRand(), txt!!, Game.Roll.YELLOW)
     }
 
     private fun generateRed() : Card {
         // Games
         var txt: String? = gameCards.firstOrNull() ?: return generateBlue()
-        gameCards.drop(1)
+        gameCards = gameCards.drop(1).toTypedArray()
         return Card(generateRand(), txt!!, Game.Roll.RED)
     }
 
     private fun generateBlue() : Card {
         // Comics
         var txt: String? = comicCards.firstOrNull() ?: return generateGreen()
-        comicCards.drop(1)
+        comicCards = comicCards.drop(1).toTypedArray()
         return Card(generateRand(), txt!!, Game.Roll.BLUE)
     }
 
     private fun generateGreen() : Card {
         // Fantasy
         var txt: String? = fantasyCards.firstOrNull() ?: return generateBlack()
-        fantasyCards.drop(1)
+        fantasyCards = fantasyCards.drop(1).toTypedArray()
         return Card(generateRand(), txt!!, Game.Roll.GREEN)
     }
 
     private fun generateBlack() : Card {
         // Misc.
         var txt: String? = miscCards.firstOrNull() ?: return generateYellow()
-        miscCards.drop(1)
+        miscCards = miscCards.drop(1).toTypedArray()
         return Card(generateRand(), txt!!, Game.Roll.BLACK)
     }
 
