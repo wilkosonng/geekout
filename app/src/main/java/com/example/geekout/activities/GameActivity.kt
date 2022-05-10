@@ -20,7 +20,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 import com.google.firebase.database.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -45,6 +44,8 @@ class GameActivity() : FragmentActivity() {
     private var isHost: Boolean = false
     private var mFrags: ArrayList<Fragment> = ArrayList()
     private var mTurnCounter: Int = 0
+    private var updating: Boolean = false
+    private var reset: Boolean = false
     private lateinit var mCardGenerator: CardGenerator
 
     private lateinit var mGameAdapter: GameAdapter
@@ -159,87 +160,103 @@ class GameActivity() : FragmentActivity() {
         if (isHost) {
             val actionsListener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    Log.i(TAG, "ACTIONS LISTENER START $updating $reset")
                     if (snapshot.exists()) {
-                        // Records player responses.
+                        if (!updating && !reset) {
+                            // Records player responses.
 
-                        val type = object : GenericTypeIndicator<ArrayList<Game.Action>>() {}
-                        val actions = snapshot.getValue(type) as ArrayList<Game.Action>
+                            Log.i(TAG, "ACTIONS LISTENER ENTER")
+                            updating = true
 
-                        mGame.setActions(actions)
+                            val type = object : GenericTypeIndicator<ArrayList<Game.Action>>() {}
+                            val actions = snapshot.getValue(type) as ArrayList<Game.Action>
 
-                        if (mGame.getState() == Game.State.BID) {
-                            val action = actions[mGame.getPlayers().indexOf(mGame.getActive())]
+                            mGame.setActions(actions)
 
-                            if (action == Game.Action.BID || action == Game.Action.BID_PASS) {
-                                setNewBidder()
-                            } else {
-                                return
-                            }
-                        } else if (mGame.getState() == Game.State.REVIEW) {
+                            if (mGame.getState() == Game.State.BID) {
+                                val action = actions[mGame.getPlayers().indexOf(mGame.getActive())]
 
-                            var approvals = 0
-                            var vetos = 0
-                            var total = 0
-                            var points = 0
-
-                            for (action in actions) {
-                                if (action == Game.Action.REVIEW_ACCEPT) {
-                                    approvals++
-                                    total++
-                                } else if (action == Game.Action.REVIEW_VETO) {
-                                    vetos++
-                                    total++
+                                if (action == Game.Action.BID || action == Game.Action.BID_PASS) {
+                                    setNewBidder()
+                                } else {
+                                    updating = false
+                                    return
                                 }
-                            }
+                            } else if (mGame.getState() == Game.State.REVIEW) {
 
-                            if (mGame.getPlayers().size != 0 && total / mGame.getPlayers().size > 0.8) {
-                                points = if (approvals > vetos) 1 else -1
+                                var approvals = 0
+                                var vetos = 0
+                                var total = 0
+                                var points = 0
 
-                                mDatabase.runTransaction(object : Transaction.Handler {
-                                    override fun doTransaction(data: MutableData): Transaction.Result {
-                                        val p = data.getValue(Game::class.java)
-                                            ?: return Transaction.success(data)
+                                for (action in actions) {
+                                    if (action == Game.Action.REVIEW_ACCEPT) {
+                                        approvals++
+                                        total++
+                                    } else if (action == Game.Action.REVIEW_VETO) {
+                                        vetos++
+                                        total++
+                                    }
+                                }
 
-                                        // Adds player avatar back into list of available avatars.
+                                if (mGame.getPlayers().size != 0 && total / mGame.getPlayers().size > 0.8) {
+                                    points = if (approvals > vetos) 1 else -1
 
-                                        val player =
-                                            p.getPlayers()[p.getPlayers().indexOf(p.getActive())]
+                                    mDatabase.runTransaction(object : Transaction.Handler {
+                                        override fun doTransaction(data: MutableData): Transaction.Result {
+                                            val p = data.getValue(Game::class.java)
+                                                ?: return Transaction.success(data)
 
-                                        Log.i(TAG, "ADDING POINTS")
-                                        player.addPoints(points)
+                                            // Adds player avatar back into list of available avatars.
 
-                                        if (player.getPoints() == 5) {
-                                            Log.i(TAG, "INTO STATE FINISH")
-                                            p.setState(Game.State.FINISH)
-                                        } else {
-                                            Log.i(TAG, "INTO STATE ROUND")
-                                            p.setState(Game.State.ROUND)
-                                            lifecycleScope.launch {
-                                                delay(4000L)
-                                                resetRound()
+                                            val player =
+                                                p.getPlayers()[p.getPlayers().indexOf(p.getActive())]
+
+                                            Log.i(TAG, "ADDING POINTS")
+                                            player.addPoints(points)
+
+                                            if (player.getPoints() == 5) {
+                                                Log.i(TAG, "INTO STATE FINISH")
+                                                p.setState(Game.State.FINISH)
+                                            } else {
+                                                Log.i(TAG, "INTO STATE ROUND")
+                                                p.setState(Game.State.ROUND)
+                                                reset = true
+                                                lifecycleScope.launch {
+                                                    delay(4000L)
+                                                    resetRound()
+                                                }
                                             }
+
+                                            data.value = p
+                                            return Transaction.success(data)
                                         }
 
-                                        data.value = p
-                                        return Transaction.success(data)
-                                    }
-
-                                    override fun onComplete(
-                                        databaseError: DatabaseError?,
-                                        committed: Boolean,
-                                        currentData: DataSnapshot?
-                                    ) {
-                                        mGame = currentData?.getValue(Game::class.java)!!
-                                        drawGame()
-                                    }
-                                })
+                                        override fun onComplete(
+                                            databaseError: DatabaseError?,
+                                            committed: Boolean,
+                                            currentData: DataSnapshot?
+                                        ) {
+                                            mGame = currentData?.getValue(Game::class.java)!!
+                                            updating = false
+                                            drawGame()
+                                        }
+                                    })
+                                } else {
+                                    updating = false
+                                }
+                            } else {
+                                updating = false
                             }
                         }
+                    } else {
+                        updating = reset
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.i(TAG, "Could not fetch Actions")
+                    updating = false
                 }
             }
 
@@ -457,6 +474,8 @@ class GameActivity() : FragmentActivity() {
                     currentData: DataSnapshot?
                 ) {
                     mGame = currentData?.getValue(Game::class.java)!!
+                    reset = false
+                    updating = false
                     setCard()
                 }
             })
@@ -590,7 +609,6 @@ class GameActivity() : FragmentActivity() {
                 currentData: DataSnapshot?
             ) {
                 mGame = currentData?.getValue(Game::class.java)!!
-                drawGame()
             }
         })
     }
@@ -613,7 +631,6 @@ class GameActivity() : FragmentActivity() {
                 currentData: DataSnapshot?
             ) {
                 mGame = currentData?.getValue(Game::class.java)!!
-                drawGame()
             }
         })
     }
@@ -672,10 +689,13 @@ class GameActivity() : FragmentActivity() {
                             currentData: DataSnapshot?
                         ) {
                             mGame = currentData?.getValue(Game::class.java)!!
+                            updating = false
 
                             drawGame()
                         }
                     })
+                } else {
+                    updating = false
                 }
             }
 
@@ -772,6 +792,7 @@ class GameActivity() : FragmentActivity() {
                     currentData: DataSnapshot?
                 ) {
                     mGame = currentData?.getValue(Game::class.java)!!
+                    updating = false
                     startGame()
                 }
             })
