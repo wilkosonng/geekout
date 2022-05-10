@@ -1,5 +1,6 @@
 package com.example.geekout.activities
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -13,6 +14,10 @@ import com.example.geekout.R
 import com.example.geekout.classes.Game
 import com.example.geekout.fragments.CodePromptDialogFragment
 import com.google.firebase.database.*
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.io.InputStreamReader
 
 class MenuActivity : FragmentActivity() {
     companion object {
@@ -21,6 +26,7 @@ class MenuActivity : FragmentActivity() {
         private const val CODE_KEY = "code"
         private const val UN_KEY = "username"
         private const val ID_KEY = "id"
+        private const val UN_FILE = "UN_File.txt"
         private val CHARSET = ('a'..'z') + ('A'..'Z') + ('0'..'9')
         private val PATTERN = Regex("[a-zA-Z]{4}")
     }
@@ -37,6 +43,7 @@ class MenuActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
 
         // Sets the Content View to the default view: Menu
+
         setContentView(R.layout.menu)
 
         // Initializes Database Reference
@@ -47,9 +54,23 @@ class MenuActivity : FragmentActivity() {
 
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this)
 
+        // Gets username from files if available
+
+        var un = "Player"
+
+        try {
+            val fis = openFileInput(UN_FILE)
+            val mReader = BufferedReader(InputStreamReader(fis))
+
+            un = mReader.readLine()
+            mReader.close()
+        } catch (e: IOException) {
+            Log.i(TAG, "Error reading file")
+        }
+
         mPrefs.edit()
             .putString(ID_KEY, createID())
-            .putString(UN_KEY, "Player")
+            .putString(UN_KEY, un)
             .commit()
 
         // Initializes Views
@@ -89,7 +110,7 @@ class MenuActivity : FragmentActivity() {
     fun joinLobby(code: String) {
         // Checks if lobby code matches the format (assumes get requests are expensive)
 
-        if(PATTERN.matches(code)) {
+        if (PATTERN.matches(code)) {
             // If it does, checks the database for an active lobby matching the code.
 
             mDatabase.child(code).get().addOnSuccessListener {
@@ -120,7 +141,7 @@ class MenuActivity : FragmentActivity() {
                     // If no lobby is found, notifies the user.
 
                     Log.i(TAG, "Lobby not found")
-                    Toast.makeText(this, "Lobby not found/in progresss", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Lobby not found/in progress", Toast.LENGTH_LONG).show()
                 }
             }.addOnFailureListener {
                 // If query fails, notifies the user.
@@ -138,7 +159,7 @@ class MenuActivity : FragmentActivity() {
     private fun createID(): String {
         var id = ""
 
-        for(i in 1..16) {
+        for (i in 1..16) {
             id += CHARSET.random()
         }
 

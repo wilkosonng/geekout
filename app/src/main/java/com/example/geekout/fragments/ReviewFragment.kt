@@ -28,7 +28,6 @@ class ReviewFragment(private val game: Game, private val mPlayer: Player) : Frag
     }
 
     private lateinit var cardFrontView: RelativeLayout
-    private lateinit var cardBackView: ImageView
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
     private lateinit var approveAnswers: Button
@@ -71,10 +70,14 @@ class ReviewFragment(private val game: Game, private val mPlayer: Player) : Frag
         mReviewAdapter.set(game.getAnswers())
 
         approveAnswers.setOnClickListener {
+            rejectAnswers.visibility = View.GONE
+            approveAnswers.visibility = View.GONE
             (activity as GameActivity).approveAnswers()
         }
 
         rejectAnswers.setOnClickListener {
+            rejectAnswers.visibility = View.GONE
+            approveAnswers.visibility = View.GONE
             (activity as GameActivity).rejectAnswers()
         }
 

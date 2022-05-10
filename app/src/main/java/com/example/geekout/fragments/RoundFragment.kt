@@ -1,10 +1,6 @@
 package com.example.geekout.fragments
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.animation.doOnEnd
 import com.example.geekout.R
-import com.example.geekout.activities.GameActivity
 import com.example.geekout.classes.Game
 
 class RoundFragment(private val game: Game) : Fragment() {
@@ -32,8 +26,6 @@ class RoundFragment(private val game: Game) : Fragment() {
     private lateinit var cardText: TextView
     private lateinit var cardColor: TextView
     private lateinit var notifView: TextView
-    private lateinit var mBackAnimator: AnimatorSet
-    private lateinit var mFrontAnimator: AnimatorSet
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,8 +73,8 @@ class RoundFragment(private val game: Game) : Fragment() {
             }
         }
 
-        notifView.text = if (vetoTally < approveTally) "${game.getActive()?.getName()} passed the challenge and earned themselves some points!" else
-            "${game.getActive()?.getName()} failed the challenge and lost themselves some points!"
+        notifView.text = if (vetoTally < approveTally) "${game.getActive()?.getName()} passed the challenge and earned themselves a point!" else
+            "${game.getActive()?.getName()} failed the challenge and lost themselves a point!"
 
         return mView
     }

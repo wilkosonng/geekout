@@ -22,7 +22,7 @@
 
       <string name="outgeek">\n-Set your username in the "Settings" tab\n\n-Either Join a Lobby if you already have a lobby code or Create a Lobby\n\n- Start Game\n
     </string>
-      <string name="outgeek1">\nFirst, you draw a card (which is randomly chosen) and then everyone begins to bid. Then you wait to find out who the player with the highest bid is. This bidder completes the task on the card. If the majority of players approve via a vote, then the player receives a point. If the majority does not approve, then the player loses a point. The first player to 10 points wins\nTip: Slide to the right of the screen to see your score
+      <string name="outgeek1">\nFirst, you draw a card (which is randomly chosen) and then everyone begins to bid. Then you wait to find out who the player with the highest bid is. This bidder completes the task on the card. If the majority of players approve via a vote, then the player receives a point. If the majority does not approve, then the player loses a point. The first player to 5 points wins\nTip: Slide to the right of the screen to see your score
     </string>
     <string name="gameover">Game Over!</string>
 </resources>
