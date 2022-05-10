@@ -43,17 +43,16 @@ class SettingsActivity : Activity() {
             val text = editText.text.toString()
 
             if (text.length in 2..12) {
-                if (!getFileStreamPath(UN_FILE).exists()) {
-                    try {
-                        val fos = openFileOutput(UN_FILE, Context.MODE_PRIVATE)
-                        val mWriter = BufferedWriter(OutputStreamWriter(fos))
+                try {
+                    val fos = openFileOutput(UN_FILE, Context.MODE_PRIVATE)
+                    val mWriter = BufferedWriter(OutputStreamWriter(fos))
 
-                        mWriter.write(text)
-                        mWriter.close()
-                    } catch (e: FileNotFoundException) {
-                        Log.i(TAG, "Error writing to file")
-                    }
+                    mWriter.write(text)
+                    mWriter.close()
+                } catch (e: FileNotFoundException) {
+                    Log.i(TAG, "Error writing to file")
                 }
+
 
                 mPrefs.edit()
                     .putString(UN_KEY, text)
