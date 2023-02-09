@@ -8,14 +8,19 @@
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
 <<<<<<< HEAD
+<<<<<<< HEAD
             <value value="C:\Users\wilko\.android\avd\Pixel_5_API_31_2.avd" />
 =======
             <value value="C:\Users\wilko\.android\avd\Pixel_XL_API_31.avd" />
 >>>>>>> 2cd9d3d (Fixed everything!)
+=======
+            <value value="C:\Users\wilko\.android\avd\Pixel_XL_API_31.avd" />
+>>>>>>> 295bcb7b0201eb261a888d34118dcb0301f8ac09
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     <timeTargetWasSelectedWithDropDown value="2022-05-09T08:22:12.320565700Z" />
@@ -25,5 +30,8 @@
 =======
     <timeTargetWasSelectedWithDropDown value="2022-05-10T08:26:04.910985500Z" />
 >>>>>>> 5ef1616 (Small fix. For real final push)
+=======
+    <timeTargetWasSelectedWithDropDown value="2022-05-10T08:26:04.910985500Z" />
+>>>>>>> 295bcb7b0201eb261a888d34118dcb0301f8ac09
   </component>
 </project>
